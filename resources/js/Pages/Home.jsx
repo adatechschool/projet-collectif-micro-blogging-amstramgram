@@ -8,6 +8,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
             <AuthenticatedLayout
                 user={auth.user}
             >
+                <h1>Home</h1>
             </AuthenticatedLayout>
         </>
     );
