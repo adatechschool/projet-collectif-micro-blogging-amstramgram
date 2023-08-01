@@ -61,6 +61,21 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                     <InputError className="mt-2" message={errors.email} />
                 </div>
+                <div>
+                    <InputLabel htmlFor="biographie" value="biographie" />
+
+                    <TextInput
+                        id="biographie"
+                        type="biographie"
+                        className="mt-1 block w-full"
+                        value={data.email}
+                        onChange={(e) => setData('email', e.target.value)}
+                        required
+                        autoComplete="username"
+                    />
+
+                    <InputError className="mt-2" message={errors.email} />
+                </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
