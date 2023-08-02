@@ -44,17 +44,31 @@ function Profile({ auth }) {
                 setContent(""); 
             });
     };
+    
+    // Pour supprimer un post
+    const deletePost = () => {
+        fetch(`/api/posts/${this.props.post.id}`, {
+          method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+          // On doit gérer la réponse du serveur (à faire)
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      };
 
     return (
         <>
             <Head title="Profile" />
             <AuthenticatedLayout user={auth.user}>
-                <div className="w-screen">
-                    <h1 className="text-center text-xl m-2">Your Profile</h1>
+                <div className="w-screen flex flex-col items-center justify-center">
+                    <h1 className="text-center text-4xl m-2">Your Profile</h1>
                     
                     <form
                         onSubmit={handleBioSubmit}
-                        className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2"
+                        className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2 rounded-xl"
                     >
                         <div className="w-3/2 p-6">
                             <InputLabel
@@ -96,10 +110,12 @@ function Profile({ auth }) {
                             </Transition>
                         </div>
                     </form>
-                    <div className="mt-20 mb-10">
-                        <form
+
+                    <div className="m-2"> </div>
+
+                    <form
                             onSubmit={handleSubmit}
-                            className="bg-gray-200 w-1/2 ml-12 p-6 space-y-4"
+                            className="bg-gray-200 w-1/2 text-center ml-12 p-6 space-y-4 rounded-xl"
                         >
                             <h2 className="text-center m-2">Add a new post</h2>
                             <input
@@ -118,25 +134,39 @@ function Profile({ auth }) {
                             />
                             <button
                                 type="submit"
-                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                                className="m-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                             >
                                 Create post
                             </button>
 
                           
                         </form>
-                    </div>
+
+                        <div className="m-2"> </div>
 
                     {posts.map((post) => (
                         <div
                             key={post.id}
-                            className="bg-purple-200 block w-4/5 lg:w-1/3  mx-auto m-2 p-2 rounded-xl"
+                            className="w-1/2 ml-12 p-6 text-center space-y-4 bg-purple-200 block rounded-xl"
                         >
                             <h2>Title: {post.title}</h2>
                             <p>Post: {post.content}</p>
                             {/* <p>User_id: {post.user_id}</p>   A commenter  */}
+
+
+                            {/* Création des boutons update et delete pour chaque post
+                            <button onClick={this.updatePost} 
+                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                            >Update</button>*/}
+                            
+                            <button onClick={deletePost}
+                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
+                            >Delete</button>
+   
                         </div>
+                        
                     ))}
+                    <div className="m-2"> </div>
                 </div>
             </AuthenticatedLayout>
         </>

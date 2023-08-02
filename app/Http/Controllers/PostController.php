@@ -25,8 +25,6 @@ class PostController extends Controller
     }
 
     
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -34,6 +32,7 @@ class PostController extends Controller
     {
         return Inertia::render('Posts/Create');
     }
+
 
     /**
      * Store a newly created post in the database.
