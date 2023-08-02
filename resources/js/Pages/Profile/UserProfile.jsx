@@ -47,7 +47,7 @@ function Profile({auth}) {
         />
                 <button
                     type="submit"
-                    className="mt-2 px-4 py-2 m-2 block mx-auto text-white bg-purple-600 rounded-lg shadow-md"
+                    className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md"
                 >
                     Create post
                 </button>
