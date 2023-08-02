@@ -27,7 +27,13 @@ Route::get('/', function () {
 
 Route::get('/', function () {
     return Inertia::render('Home');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('home');
+
+Route::get('/profile', function () {
+    return Inertia::render('Profile/UserProfile');
+})->middleware(['auth', 'verified'])->name('profile');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/setting', [SettingController::class, 'edit'])->name('setting.edit');
@@ -36,3 +42,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/post.php';
