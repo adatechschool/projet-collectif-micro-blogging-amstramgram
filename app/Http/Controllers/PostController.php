@@ -1,10 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SettingUpdateRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 
 class PostController extends Controller
@@ -62,16 +65,20 @@ class PostController extends Controller
     }
 
 
-    public function update(Request $request, Post $post)
+    public function update(SettingUpdateRequest $request, Post $post): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'nullable|string',
-        ]);
+        $request->user()->fill($request->validated());
+        // $request->validate([
+        //     'title' => 'required|string|max:255',
+        //     'content' => 'nullable|string',
+        //     'biographie' => 'nullable|string',
+        // ]);
 
-        $post->update($request->all());
+        // $post->update($request->all());
 
-        return response()->json($post);
+        // return response()->json($post);
+        $request->user()->save();
+        return Redirect::route('profile');
     }
 
     public function destroy(Post $post)

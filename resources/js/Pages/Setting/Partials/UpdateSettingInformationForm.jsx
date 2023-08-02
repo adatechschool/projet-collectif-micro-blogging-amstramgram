@@ -11,12 +11,11 @@ export default function UpdateSettingInformation({ mustVerifyEmail, status, clas
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
-        biographie: user.biographie,
+        // biographie: user.biographie,
     });
 
     const submit = (e) => {
         e.preventDefault();
-
         patch(route('setting.update'));
     };
 
@@ -62,7 +61,7 @@ export default function UpdateSettingInformation({ mustVerifyEmail, status, clas
 
                     <InputError className="mt-2" message={errors.email} />
                 </div>
-                <div>
+                {/* <div>
                     <InputLabel htmlFor="biographie" value="Biographie" />
 
                     <TextInput
@@ -76,7 +75,7 @@ export default function UpdateSettingInformation({ mustVerifyEmail, status, clas
                     />
 
                     <InputError className="mt-2" message={errors.biographie} />
-                </div>
+                </div> */}
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
