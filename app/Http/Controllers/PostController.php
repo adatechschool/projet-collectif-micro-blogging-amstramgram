@@ -81,6 +81,7 @@ class PostController extends Controller
         $request->user()->save();
         return Redirect::route('profile');
     }
+    
 
     public function destroy(Post $post)
     {

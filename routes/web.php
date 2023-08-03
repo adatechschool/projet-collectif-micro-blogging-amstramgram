@@ -57,10 +57,12 @@ Route::get('/api/posts', function () {
     return App\Models\Post::with('user')->get();
 });
 
+
+
 // C'est pour manipuler les posts de l'utilisateur sur son profil (delete et update) 
 Route::middleware('auth')->group(function () {
 Route::delete('/posts', [PostController::class, 'destroy'])->name('profile.destroy');
-Route::patch('/posts', [PostController::class, 'update'])->name('profile.update');
+Route::put('/posts', [PostController::class, 'update'])->name('profile.update');
 });
 
 require __DIR__ . '/auth.php';

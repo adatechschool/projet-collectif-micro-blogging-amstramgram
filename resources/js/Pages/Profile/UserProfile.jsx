@@ -25,47 +25,91 @@ function Profile({ auth }) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [posts, setPosts] = useState([]);
+    const [inputValue1, setInputValue1] = useState("");
+    const [inputValue2, setInputValue2] = useState("");
 
     useEffect(() => {
-        axios
-            .get("/posts")
-            .then((response) => {
-                setPosts(response.data);
-            });
+        axios.get("/posts").then((response) => {
+            setPosts(response.data);
+        });
     }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios
-            .post("/posts", { title, content })
-            .then((response) => {
-                setPosts([...posts, response.data]);
-                setTitle(""); 
-                setContent(""); 
-            });
+        axios.post("/posts", { title, content }).then((response) => {
+            setPosts([...posts, response.data]);
+            setTitle("");
+            setContent("");
+        });
     };
-    
+
     // Pour supprimer un post
     const deletePost = (id) => {
         axios
-        .delete(`/posts/${id}` )
-       // {
-          //method: 'DELETE'
-       // })
-        .then(response => {
-            setPosts(posts.filter((post) => post.id !== id));
-        })
-        .catch(error => {
-          console.error('Error:', error);
+            .delete(`/posts/${id}`)
+            // {
+            //method: 'DELETE'
+            // })
+            .then((response) => {
+                setPosts(posts.filter((post) => post.id !== id));
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
+    const handleButtonClick = (id) => {
+        const inputupdate = document.getElementById("update");
+        axios.get("/posts").then((response) => {
+            let array = response.data;
+            for (let index = 0; index < array.length; index++) {
+                const element = array[index].id;
+
+                if (element === id) {
+                    const test = inputupdate.appendChild(
+                    document.createElement("div")
+                    );
+                    test.innerHTML += `
+                        <div>
+                            <input 
+                                type="text"
+                                value={inputValue1}
+                                onChange={handleInputChange1}
+                                placeholder="Input 1"
+                            />
+                            <input
+                                type="text"
+                                value={inputValue2}
+                                onChange={handleInputChange2}
+                                placeholder="Input 2"
+                            />
+                        </div>
+                        `;
+
+                    // console.log(element, id);
+                }
+            }
         });
-      };
+    };
+
+    const handleInputChange1 = (event) => {
+        setInputValue1(event.target.value);
+    };
+
+    const handleInputChange2 = (event) => {
+        setInputValue2(event.target.value);
+    };
 
     const updatePost = (id) => {
-        axios.put
-
-
-    };  
+        axios
+            .put(`/posts/${id}`)
+            .then((response) => {
+                console.log("test");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
 
     return (
         <>
@@ -73,7 +117,7 @@ function Profile({ auth }) {
             <AuthenticatedLayout user={auth.user}>
                 <div className="w-screen flex flex-col items-center justify-center">
                     <h1 className="text-center text-4xl m-2">Your Profile</h1>
-                    
+
                     <form
                         onSubmit={handleBioSubmit}
                         className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2 rounded-xl"
@@ -103,7 +147,11 @@ function Profile({ auth }) {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <PrimaryButton type="submit" disabled={processing} className="mt-2 px-4 py-2 m-2 block bg-purple-600 hover:bg-black duration-500 ">
+                            <PrimaryButton
+                                type="submit"
+                                disabled={processing}
+                                className="mt-2 px-4 py-2 m-2 block bg-purple-600 hover:bg-black duration-500 "
+                            >
                                 Save
                             </PrimaryButton>
 
@@ -122,38 +170,37 @@ function Profile({ auth }) {
                     <div className="m-2"> </div>
 
                     <form
-                            onSubmit={handleSubmit}
-                            className="bg-gray-200 w-1/2 text-center ml-12 p-6 space-y-4 rounded-xl"
+                        onSubmit={handleSubmit}
+                        className="bg-gray-200 w-1/2 text-center ml-12 p-6 space-y-4 rounded-xl"
+                    >
+                        <h2 className="text-center m-2">Add a new post</h2>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Title"
+                            className="block w-2/4 min-w-fit border rounded-lg shadow-md"
+                            required
+                        />
+                        <textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="Content"
+                            className="block w-2/4 min-w-fit mt-2 border rounded-lg shadow-md"
+                        />
+                        <button
+                            type="submit"
+                            className="m-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                         >
-                            <h2 className="text-center m-2">Add a new post</h2>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Title"
-                                className="block w-2/4 min-w-fit border rounded-lg shadow-md"
-                                required
-                            />
-                            <textarea
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                placeholder="Content"
-                                className="block w-2/4 min-w-fit mt-2 border rounded-lg shadow-md"
-                            />
-                            <button
-                                type="submit"
-                                className="m-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                            >
-                                Create post
-                            </button>
+                            Create post
+                        </button>
+                    </form>
 
-                          
-                        </form>
-
-                        <div className="m-2"> </div>
+                    <div className="m-2"> </div>
 
                     {posts.map((post) => (
                         <div
+                            id="update"
                             key={post.id}
                             className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
                         >
@@ -161,18 +208,24 @@ function Profile({ auth }) {
                             <p>Post: {post.content}</p>
                             {/* <p>User_id: {post.user_id}</p>   A commenter  */}
 
-
                             {/* Création des boutons update et delete pour chaque post */}
-                            <button onClick={ () => updatePost(post.id)} 
+                            {/* <button onClick={ () => updatePost(post.id)} 
                             className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                            >Update</button>
-                            
-                            <button onClick={ () => deletePost(post.id)}
-                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
-                            >Delete</button>
-   
+                            >Update</button> */}
+                            <button
+                                onClick={() => handleButtonClick(post.id)}
+                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                            >
+                                Update
+                            </button>
+
+                            <button
+                                onClick={() => deletePost(post.id)}
+                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
+                            >
+                                Delete
+                            </button>
                         </div>
-                        
                     ))}
                     <div className="m-2"> </div>
                 </div>
