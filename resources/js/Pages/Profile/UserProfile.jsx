@@ -6,6 +6,7 @@ import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { Transition } from "@headlessui/react";
+
 import axios from "axios";
 
 function Profile({ auth }) {
@@ -46,18 +47,25 @@ function Profile({ auth }) {
     };
     
     // Pour supprimer un post
-    const deletePost = () => {
-        fetch(`/api/posts/${this.props.post.id}`, {
-          method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-          // On doit gérer la réponse du serveur (à faire)
+    const deletePost = (id) => {
+        axios
+        .delete(`/posts/${id}` )
+       // {
+          //method: 'DELETE'
+       // })
+        .then(response => {
+            setPosts(posts.filter((post) => post.id !== id));
         })
         .catch(error => {
           console.error('Error:', error);
         });
       };
+
+    const updatePost = (id) => {
+        axios.put
+
+
+    };  
 
     return (
         <>
@@ -147,19 +155,19 @@ function Profile({ auth }) {
                     {posts.map((post) => (
                         <div
                             key={post.id}
-                            className="w-1/2 ml-12 p-6 text-center space-y-4 bg-purple-200 block rounded-xl"
+                            className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
                         >
                             <h2>Title: {post.title}</h2>
                             <p>Post: {post.content}</p>
                             {/* <p>User_id: {post.user_id}</p>   A commenter  */}
 
 
-                            {/* Création des boutons update et delete pour chaque post
-                            <button onClick={this.updatePost} 
+                            {/* Création des boutons update et delete pour chaque post */}
+                            <button onClick={ () => updatePost(post.id)} 
                             className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                            >Update</button>*/}
+                            >Update</button>
                             
-                            <button onClick={deletePost}
+                            <button onClick={ () => deletePost(post.id)}
                             className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
                             >Delete</button>
    
