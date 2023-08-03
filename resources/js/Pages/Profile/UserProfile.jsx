@@ -27,6 +27,7 @@ function Profile({ auth }) {
     const [posts, setPosts] = useState([]);
     const [inputValue1, setInputValue1] = useState("");
     const [inputValue2, setInputValue2] = useState("");
+    const [updatingPostId, setUpdatingPostId] = useState(null);
 
     useEffect(() => {
         axios.get("/posts").then((response) => {
@@ -58,38 +59,11 @@ function Profile({ auth }) {
                 console.error("Error:", error);
             });
     };
+   
     const handleButtonClick = (id) => {
-        const inputupdate = document.getElementById("update");
-        axios.get("/posts").then((response) => {
-            let array = response.data;
-            for (let index = 0; index < array.length; index++) {
-                const element = array[index].id;
-
-                if (element === id) {
-                    const test = inputupdate.appendChild(
-                    document.createElement("div")
-                    );
-                    test.innerHTML += `
-                        <div>
-                            <input 
-                                type="text"
-                                value={inputValue1}
-                                onChange={handleInputChange1}
-                                placeholder="Input 1"
-                            />
-                            <input
-                                type="text"
-                                value={inputValue2}
-                                onChange={handleInputChange2}
-                                placeholder="Input 2"
-                            />
-                        </div>
-                        `;
-
-                    // console.log(element, id);
-                }
-            }
-        });
+        setUpdatingPostId(id);
+        
+        ;
     };
 
     const handleInputChange1 = (event) => {
@@ -190,7 +164,7 @@ function Profile({ auth }) {
                         />
                         <button
                             type="submit"
-                            className="m-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                            className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                         >
                             Create post
                         </button>
@@ -199,34 +173,45 @@ function Profile({ auth }) {
                     <div className="m-2"> </div>
 
                     {posts.map((post) => (
-                        <div
-                            id="update"
-                            key={post.id}
-                            className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
-                        >
-                            <h2>Title: {post.title}</h2>
-                            <p>Post: {post.content}</p>
-                            {/* <p>User_id: {post.user_id}</p>   A commenter  */}
+    <div
+        key={post.id}
+        className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+    >
+        <h2>Title: {post.title}</h2>
+        <p>Post: {post.content}</p>
 
-                            {/* Création des boutons update et delete pour chaque post */}
-                            {/* <button onClick={ () => updatePost(post.id)} 
-                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                            >Update</button> */}
-                            <button
-                                onClick={() => handleButtonClick(post.id)}
-                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                            >
-                                Update
-                            </button>
+        {updatingPostId === post.id && (
+            <div>
+                <input 
+                    type="text"
+                    value={inputValue1}
+                    onChange={handleInputChange1}
+                    placeholder="Input 1"
+                />
+                <input
+                    type="text"
+                    value={inputValue2}
+                    onChange={handleInputChange2}
+                    placeholder="Input 2"
+                />
+            </div>
+        )}
 
-                            <button
-                                onClick={() => deletePost(post.id)}
-                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    ))}
+        <button
+            onClick={() => handleButtonClick(post.id)}
+            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+        >
+            Update
+        </button>
+
+        <button
+            onClick={() => deletePost(post.id)}
+            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
+        >
+            Delete
+        </button>
+    </div>
+))}
                     <div className="m-2"> </div>
                 </div>
             </AuthenticatedLayout>
