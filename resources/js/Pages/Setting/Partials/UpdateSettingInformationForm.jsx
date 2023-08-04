@@ -11,7 +11,6 @@ export default function UpdateSettingInformation({ mustVerifyEmail, status, clas
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
-        // biographie: user.biographie,
     });
 
     const submit = (e) => {
@@ -61,21 +60,6 @@ export default function UpdateSettingInformation({ mustVerifyEmail, status, clas
 
                     <InputError className="mt-2" message={errors.email} />
                 </div>
-                {/* <div>
-                    <InputLabel htmlFor="biographie" value="Biographie" />
-
-                    <TextInput
-                        id="biographie"
-                        type="text"
-                        className="mt-1 block w-full"
-                        value={data.biographie}
-                        onChange={(e) => setData('biographie', e.target.value)}
-                        required
-                        autoComplete="biographie"
-                    />
-
-                    <InputError className="mt-2" message={errors.biographie} />
-                </div> */}
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>

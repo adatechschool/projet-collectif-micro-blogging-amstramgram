@@ -36,13 +36,16 @@ Route::get('/profile', function () {
 })->middleware(['auth', 'verified'])->name('profile');
 
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/setting', [SettingController::class, 'edit'])->name('setting.edit');
     Route::patch('/setting', [SettingController::class, 'update'])->name('setting.update');
     Route::delete('/setting', [SettingController::class, 'destroy'])->name('setting.destroy');
     Route::patch('/profile', [PostController::class, 'update'])->name('profile.update');
-   
+    // Route pour manipuler les posts
+    Route::delete('/posts/{postId}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::patch('/posts/{postId}', [PostController::class, 'updatePost'])->name('posts.update');
+    // Route pour update la biographie dans le profile
+    Route::patch('/bio', [PostController::class, 'updateBio'])->name('bio.update');
 });
 
 
@@ -57,13 +60,6 @@ Route::get('/api/posts', function () {
     return App\Models\Post::with('user')->get();
 });
 
-
-
-// C'est pour manipuler les posts de l'utilisateur sur son profil (delete et update) 
-Route::middleware('auth')->group(function () {
-Route::delete('/posts', [PostController::class, 'destroy'])->name('profile.destroy');
-Route::put('/posts', [PostController::class, 'update'])->name('profile.update');
-});
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/post.php';
