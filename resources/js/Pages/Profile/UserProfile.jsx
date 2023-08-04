@@ -16,6 +16,7 @@ function Profile({ auth }) {
     const [titleValue, setTitleValue] = useState("");
     const [ContentValue, setContentValue] = useState("");
     const [updatingPostId, setUpdatingPostId] = useState(null);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const user = usePage().props.auth.user;
 
@@ -60,9 +61,10 @@ function Profile({ auth }) {
     // Gestion du bouton qui permet de mettre à jour un post
     const handleButtonClick = (id) => {
         setUpdatingPostId(id);
-        const postToUpdate = posts.find(post => post.id === id);
+        const postToUpdate = posts.find((post) => post.id === id);
         setTitleValue(postToUpdate.title);
         setContentValue(postToUpdate.content);
+        setIsUpdating(true); // user is updating
     };
 
     // Gestion du changement de titre du post
@@ -76,36 +78,35 @@ function Profile({ auth }) {
     // Fontion pour mettre à jour un post
     const updatePost = () => {
         axios
-        .patch(`/posts/${updatingPostId}`, {
-            title: titleValue,
-            content: ContentValue,
-        })
-        .then((response) => {
-            setPosts(
-                posts.map((post) =>
-                    post.id === updatingPostId ? response.data : post
-                )
-            );
-            setUpdatingPostId(null); 
-            setTitleValue(""); 
-            setContentValue("");  
-        })
-        .catch((error) => {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.log(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error', error.message);
-            }
-        });
-    
-
+            .patch(`/posts/${updatingPostId}`, {
+                title: titleValue,
+                content: ContentValue,
+            })
+            .then((response) => {
+                setPosts(
+                    posts.map((post) =>
+                        post.id === updatingPostId ? response.data : post
+                    )
+                );
+                setUpdatingPostId(null);
+                setTitleValue("");
+                setContentValue("");
+                setIsUpdating(false); // user is not updating
+            })
+            .catch((error) => {
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log("Error", error.message);
+                }
+            });
     };
 
     return (
@@ -142,7 +143,7 @@ function Profile({ auth }) {
                                 message={errors.biographie}
                             />
                         </div>
-                                {/* Save button */}
+                        {/* Save button */}
                         <div className="flex items-center gap-4">
                             <PrimaryButton
                                 type="submit"
@@ -151,7 +152,7 @@ function Profile({ auth }) {
                             >
                                 Save
                             </PrimaryButton>
-                                     {/* Apparition du mot save quand on met à jour la biographie */}
+                            {/* Apparition du mot save quand on met à jour la biographie */}
                             <Transition
                                 show={recentlySuccessful}
                                 enter="transition ease-in-out"
@@ -163,8 +164,7 @@ function Profile({ auth }) {
                             </Transition>
                         </div>
                     </form>
-                                     {/* Formulaire pour l'ajout d'un nouveau post */}
-                 
+                    {/* Formulaire pour l'ajout d'un nouveau post */}
 
                     <form
                         onSubmit={handleSubmit}
@@ -194,19 +194,17 @@ function Profile({ auth }) {
                     </form>
 
                     {/* Affichage des posts de l'user */}
-
+                    {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
                     {posts.map((post) => (
                         <div
                             key={post.id}
                             className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
                         >
-                            <h2>Title: {post.title}</h2>
-                            <p>Content: {post.content}</p>
-                                 {/* Updating post form */}
-                            {updatingPostId === post.id && (
-                                <div>
-                                    <form onSubmit={(event) => { event.preventDefault(); updatePost() }}>
-
+                            {/* Vérifier l'état si l'user update ou pas */}
+                            {isUpdating && updatingPostId === post.id ? (
+                                <>
+                                    <div className="flex items-center">
+                                        <p className="mr-2">Title:</p>
                                         <TextInput
                                             type="text"
                                             onChange={handleTitleChange}
@@ -215,6 +213,9 @@ function Profile({ auth }) {
                                             required
                                             autoComplete="inputTitle"
                                         />
+                                    </div>
+                                    <div className="flex items-center">
+                                        <p className="mr-2">Content:</p>
                                         <TextInput
                                             type="text"
                                             onChange={handleContentChange}
@@ -223,32 +224,36 @@ function Profile({ auth }) {
                                             required
                                             autoComplete="inputContent"
                                         />
-                                        <button
-                                            type="submit"
-                                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                                        >
-                                            Confirm Update
-                                        </button>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <button
+                                        onClick={updatePost}
+                                        className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                                    >
+                                        Save
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <h2>Title: {post.title}</h2>
+                                    <p>Content: {post.content}</p>
+                                    <button
+                                        onClick={() =>
+                                            handleButtonClick(post.id)
+                                        }
+                                        className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                                    >
+                                        Update
+                                    </button>
+                                    <button
+                                        onClick={() => deletePost(post.id)}
+                                        className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
+                                    >
+                                        Delete
+                                    </button>
+                                </>
                             )}
-                             {/* Update a post button qui va déclencher l'apparition du formulaire pour update un post */}
-                            <button
-                                onClick={() => handleButtonClick(post.id)}
-                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                            >
-                                Update
-                            </button>
-                               {/* Delete post button */}
-                            <button
-                                onClick={() => deletePost(post.id)}
-                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
-                            >
-                                Delete
-                            </button>
                         </div>
                     ))}
-                    <div className="m-2"> </div>
                 </div>
             </AuthenticatedLayout>
         </>
