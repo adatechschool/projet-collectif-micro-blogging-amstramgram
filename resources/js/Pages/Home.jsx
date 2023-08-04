@@ -22,7 +22,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                     <h1 className="text-4xl m-5">Home</h1>
                     {posts.map(post => (
                         <div key={post.id}
-                            className="w-full md:w-1/2 mx-auto p-6 space-y-6 text-xl bg-purple-200 block m-4 p-2 rounded-xl"
+                            className="w-full md:w-1/2 mx-auto p-6 space-y-6 text-xl bg-purple-200 block m-4 rounded-xl"
                         >
                             <h2>{post.title}</h2>
                             <h3>{post.content}</h3>

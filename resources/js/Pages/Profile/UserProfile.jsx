@@ -201,7 +201,7 @@ function Profile({ auth }) {
                             className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
                         >
                             <h2>Title: {post.title}</h2>
-                            <p>Post: {post.content}</p>
+                            <p>Content: {post.content}</p>
                                  {/* Updating post form */}
                             {updatingPostId === post.id && (
                                 <div>
