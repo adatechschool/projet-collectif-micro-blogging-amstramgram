@@ -23,6 +23,8 @@ class PostController extends Controller
 
         return response()->json($posts);
     }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -63,6 +65,7 @@ class PostController extends Controller
         return response()->json($post);
     }
 
+
     // update la biographie
     public function updateBio(SettingUpdateRequest $request): RedirectResponse
     {
@@ -72,7 +75,7 @@ class PostController extends Controller
     }
 
     // update les posts
-    public function updatePost(Request $request, Post $post)
+    public function update(Request $request, Post $post)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -84,7 +87,9 @@ class PostController extends Controller
         return response()->json($post);
     }
 
-    // delete les posts
+
+     // delete les posts
+
     public function destroy(Post $post)
     {
         $post->delete();

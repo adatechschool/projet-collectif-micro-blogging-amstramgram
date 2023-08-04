@@ -40,11 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/setting', [SettingController::class, 'edit'])->name('setting.edit');
     Route::patch('/setting', [SettingController::class, 'update'])->name('setting.update');
     Route::delete('/setting', [SettingController::class, 'destroy'])->name('setting.destroy');
-    Route::patch('/profile', [PostController::class, 'update'])->name('profile.update');
-    // Route pour manipuler les posts
-    Route::delete('/posts/{postId}', [PostController::class, 'destroy'])->name('posts.destroy');
-    Route::patch('/posts/{postId}', [PostController::class, 'updatePost'])->name('posts.update');
-    // Route pour update la biographie dans le profile
+    // Route::patch('/profile', [PostController::class, 'update'])->name('profile.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::patch('/bio', [PostController::class, 'updateBio'])->name('bio.update');
 });
 

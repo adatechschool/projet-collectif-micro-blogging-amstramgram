@@ -64,7 +64,7 @@ function Profile({ auth }) {
         setTitleValue(postToUpdate.title);
         setContentValue(postToUpdate.content);
     };
-    
+
     // Gestion du changement de titre du post
     const handleTitleChange = (event) => {
         setTitleValue(event.target.value);
@@ -86,14 +86,26 @@ function Profile({ auth }) {
                     post.id === updatingPostId ? response.data : post
                 )
             );
-            setUpdatingPostId(null);  // To clear the updating id after successful update
-            setTitleValue("");  // Clearing the form after successful update
-            setContentValue("");  // Clearing the form after successful update
+            setUpdatingPostId(null); 
+            setTitleValue(""); 
+            setContentValue("");  
         })
         .catch((error) => {
-            console.error("Error:", error);
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
         });
     
+
     };
 
     return (
@@ -139,7 +151,7 @@ function Profile({ auth }) {
                             >
                                 Save
                             </PrimaryButton>
-                                 {/* Apparition du mot save quand on met à jour la biographie */}
+                                     {/* Apparition du mot save quand on met à jour la biographie */}
                             <Transition
                                 show={recentlySuccessful}
                                 enter="transition ease-in-out"
@@ -151,7 +163,9 @@ function Profile({ auth }) {
                             </Transition>
                         </div>
                     </form>
-                                {/* Formulaire pour l'ajout d'un nouveau post */}
+                                     {/* Formulaire pour l'ajout d'un nouveau post */}
+                 
+
                     <form
                         onSubmit={handleSubmit}
                         className="bg-gray-200 w-1/2 text-center ml-12 p-6 space-y-4 rounded-xl"
@@ -179,7 +193,7 @@ function Profile({ auth }) {
                         </button>
                     </form>
 
-                   {/* Affichage des posts de l'user */}
+                    {/* Affichage des posts de l'user */}
 
                     {posts.map((post) => (
                         <div
@@ -188,10 +202,10 @@ function Profile({ auth }) {
                         >
                             <h2>Title: {post.title}</h2>
                             <p>Post: {post.content}</p>
-                                {/* Updating post form */}
+                                 {/* Updating post form */}
                             {updatingPostId === post.id && (
                                 <div>
-                                   <form onSubmit={(event) => {event.preventDefault(); updatePost()}}>
+                                    <form onSubmit={(event) => { event.preventDefault(); updatePost() }}>
 
                                         <TextInput
                                             type="text"
@@ -218,14 +232,14 @@ function Profile({ auth }) {
                                     </form>
                                 </div>
                             )}
-                            {/* Update a post button qui va déclencher l'apparition du formulaire pour update un post */}
+                             {/* Update a post button qui va déclencher l'apparition du formulaire pour update un post */}
                             <button
-                                 onClick={() => handleButtonClick(post.id)}
+                                onClick={() => handleButtonClick(post.id)}
                                 className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                             >
                                 Update
                             </button>
-                            {/* Delete post button */}
+                               {/* Delete post button */}
                             <button
                                 onClick={() => deletePost(post.id)}
                                 className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
