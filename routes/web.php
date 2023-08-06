@@ -49,9 +49,15 @@ Route::middleware('auth')->group(function () {
 
 // Création d'un nouveau endpoint et l'ajout d'une nouvelle route qui renvoie tous les posts
 // Récupérez les posts, en s'assurant de charger les données de l'utilisateur
-Route::get('/api/posts', function () {
-    return App\Models\Post::with('user')->orderBy('created_at', 'desc')->get();
+Route::get('/api/posts', function (\Illuminate\Http\Request $request) {
+    $limit = $request->input('per_page', 5);
+    $page = $request->input('page', 1); 
+    $offset = ($page - 1) * $limit;
+    return App\Models\Post::with('user')->orderBy('created_at', 'desc')->skip($offset)->take($limit)->get();
 });
+
+
+
 
 // Route::get('/api/posts', function () {
 //     return App\Models\Post::with('user')->orderBy('created_at', 'desc')->get();
