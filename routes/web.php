@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ImageController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -46,18 +48,27 @@ Route::middleware('auth')->group(function () {
     Route::patch('/bio', [PostController::class, 'updateBio'])->name('bio.update');
 });
 
-
 // Création d'un nouveau endpoint et l'ajout d'une nouvelle route qui renvoie tous les posts
 Route::get('/api/posts', function () {
     return App\Models\Post::all();
 });
-
 
 // Récupérez les posts, en s'assurant de charger les données de l'utilisateur
 Route::get('/api/posts', function () {
     return App\Models\Post::with('user')->get();
 });
 
+// Pour manipuler les posts de l'utilisateur sur son profil (delete et update)
+Route::middleware('auth')->group(function () {
+Route::delete('/posts', [PostController::class, 'destroy'])->name('profile.destroy');
+Route::put('/posts', [PostController::class, 'update'])->name('profile.update');
+});
+
+// Créer un endpoint pour uploader la photo de profil
+// routes/api.php
+//Route::post('/upload-image', [ImageController::class, 'upload']);
+
+Route::post('api/photo', [PhotoController::class, 'uploadPhoto']);
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/post.php';
