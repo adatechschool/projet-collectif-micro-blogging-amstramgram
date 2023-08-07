@@ -32,6 +32,21 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
         }, 500);
     }, [page]);
 
+    const toggleLike = async (postId, isLiked) => {
+        const url = isLiked ? `/posts/${postId}/unlike` : `/posts/${postId}/like`;
+        const response = await axios.post(url);
+        
+        if(response.status === 200) {
+            // Map over your posts and update the liked post
+            setPosts(posts.map(post =>
+                post.id === postId
+                ? { ...post, liked: !isLiked } // Toggle the liked attribute of the liked/unliked post
+                : post // Return all other posts as they were
+            ));
+        }
+    };
+    
+
     // add limit to the content in the cards
     function truncateContent(content, limit = 50) {
         return content.length > limit
@@ -81,9 +96,13 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
 
                                 {/* Reaction Icons */}
                                 <div className="ReactionIcon flex items-start space-x-4 pl-2">
-                                    <div className="hover:text-red-400">
+                                    <div
+                                        className={`hover:text-red-400 cursor-pointer ${post.liked ? "text-red-400" : ""}`}
+                                        onClick={() =>
+                                            toggleLike(post.id, post.liked)
+                                        }
+                                    >
                                         <FontAwesomeIcon icon={faHeart} />{" "}
-                                        {post.likes}
                                     </div>
 
                                     <div className="hover:text-slate-400">

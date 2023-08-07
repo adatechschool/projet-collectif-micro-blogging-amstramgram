@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 
 class Post extends Model
 {
@@ -14,5 +16,16 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function likes(){
+        return $this->hasMany(Like::class);
+    }
+    public function unlike(Post $post) {
+        return $post->likes()->where('user_id', auth()->user()->id)->delete();
+    }
+    // In Post model
+    public function getLikedAttribute() {
+    return $this->likes()->where('user_id', Auth::id())->exists();  
+}
 
 }
