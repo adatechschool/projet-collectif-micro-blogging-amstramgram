@@ -113,7 +113,7 @@ function Profile({ auth }) {
         <>
             <Head title="Profile" />
             <AuthenticatedLayout user={auth.user}>
-                <div className="w-screen flex flex-col items-center justify-center">
+                <div className="w-screen flex flex-col items-center justify-center space-y-6">
                     <h1 className="text-center text-4xl m-2">Your Profile</h1>
                     {/* Formulaire de mise à jour de la biographie */}
                     <form
@@ -170,7 +170,7 @@ function Profile({ auth }) {
                         onSubmit={handleSubmit}
                         className="bg-gray-200 w-1/2 text-center ml-12 p-6 space-y-4 rounded-xl"
                     >
-                        <h2 className="text-center m-2">Add a new post</h2>
+                        <h2 className="text-center m-2 font-bold">Add a new post</h2>
                         <input
                             type="text"
                             value={title}
@@ -198,7 +198,7 @@ function Profile({ auth }) {
                     {posts.map((post) => (
                         <div
                             key={post.id}
-                            className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+                            className=" w-1/4 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
                         >
                             {/* Vérifier l'état si l'user update ou pas */}
                             {isUpdating && updatingPostId === post.id ? (
@@ -234,6 +234,14 @@ function Profile({ auth }) {
                                 </>
                             ) : (
                                 <>
+                                <div className="flex justify-center">
+                                    <img
+                                        src="https://picsum.photos/200/300"
+                                        alt={post.title}
+                                        className="w-full h-48 object-fit"
+                                    />
+                                </div>
+
                                     <h2>Title: {post.title}</h2>
                                     <p>Content: {post.content}</p>
                                     <button
