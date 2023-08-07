@@ -20,14 +20,14 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::where('user_id', auth()->id())
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-                    ->each
-                    ->append('liked');
-    
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->each
+            ->append('liked');
+
         return response()->json($posts);
     }
-    
+
 
 
     /**
@@ -93,7 +93,7 @@ class PostController extends Controller
     }
 
 
-     // delete les posts
+    // delete les posts
 
     public function destroy(Post $post)
     {
@@ -102,17 +102,23 @@ class PostController extends Controller
         return response()->json(['success' => 'Post deleted successfully.']);
     }
 
-    public function like(Post $post) {
+    public function like(Post $post)
+    {
         auth()->user()->likes()->create([
             'post_id' => $post->id,
         ]);
         return response()->json(['status' => 'success', 'message' => 'Post liked.']);
     }
-    
-    public function unlike(Post $post) {
+
+    public function unlike(Post $post)
+    {
         $post->likes()->where('user_id', auth()->user()->id)->delete();
         return response()->json(['status' => 'success', 'message' => 'Post unliked.']);
     }
-    
-    
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+
 }

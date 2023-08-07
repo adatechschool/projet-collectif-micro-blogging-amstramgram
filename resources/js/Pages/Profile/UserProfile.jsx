@@ -118,7 +118,7 @@ function Profile({ auth }) {
                     {/* Formulaire de mise à jour de la biographie */}
                     <form
                         onSubmit={handleBioSubmit}
-                        className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2 rounded-xl"
+                        className="mt-6 space-y-6 ml-12 bg-gray-200 p-2 rounded-xl w-2/3 lg:w-2/3"
                     >
                         <div className="w-3/2 p-6">
                             <InputLabel
@@ -168,7 +168,7 @@ function Profile({ auth }) {
 
                     <form
                         onSubmit={handleSubmit}
-                        className="bg-gray-200 w-1/2 text-center ml-12 p-6 space-y-4 rounded-xl"
+                        className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-2/3 "
                     >
                         <h2 className="text-center m-2 font-bold">Add a new post</h2>
                         <input
@@ -197,9 +197,10 @@ function Profile({ auth }) {
                     {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
                     {posts.map((post) => (
                         <div
-                            key={post.id}
-                            className=" w-1/4 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
-                        >
+                        key={post.id}
+                        className="w-2/3 lg:w-1/3 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+                      >
+                      
                             {/* Vérifier l'état si l'user update ou pas */}
                             {isUpdating && updatingPostId === post.id ? (
                                 <>

@@ -53,7 +53,7 @@ Route::get('/api/posts', function (\Illuminate\Http\Request $request) {
     $limit = $request->input('per_page', 5);
     $page = $request->input('page', 1); 
     $offset = ($page - 1) * $limit;
-    $posts = App\Models\Post::with('user')->orderBy('created_at', 'desc')->skip($offset)->take($limit)->get();
+    $posts = App\Models\Post::with('user')->withCount('likes')->orderBy('created_at', 'desc')->skip($offset)->take($limit)->get();
     $posts->each->append('liked');
     return $posts;
 });

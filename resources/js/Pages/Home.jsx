@@ -33,19 +33,29 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
     }, [page]);
 
     const toggleLike = async (postId, isLiked) => {
-        const url = isLiked ? `/posts/${postId}/unlike` : `/posts/${postId}/like`;
+        const url = isLiked
+            ? `/posts/${postId}/unlike`
+            : `/posts/${postId}/like`;
         const response = await axios.post(url);
-        
-        if(response.status === 200) {
+
+        if (response.status === 200) {
             // Map over your posts and update the liked post
-            setPosts(posts.map(post =>
-                post.id === postId
-                ? { ...post, liked: !isLiked } // Toggle the liked attribute of the liked/unliked post
-                : post // Return all other posts as they were
-            ));
+            setPosts(
+                posts.map(
+                    (post) =>
+                        post.id === postId
+                            ? {
+                                  ...post,
+                                  liked: !isLiked,
+                                  likes_count: isLiked
+                                      ? post.likes_count - 1
+                                      : post.likes_count + 1,
+                              } 
+                            : post
+                )
+            );
         }
     };
-    
 
     // add limit to the content in the cards
     function truncateContent(content, limit = 50) {
@@ -97,20 +107,25 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                                 {/* Reaction Icons */}
                                 <div className="ReactionIcon flex items-start space-x-4 pl-2">
                                     <div
-                                        className={`hover:text-red-400 cursor-pointer ${post.liked ? "text-red-400" : ""}`}
+                                        className={`hover:text-red-400 cursor-pointer ${
+                                            post.liked ? "text-red-500" : ""
+                                        }`}
                                         onClick={() =>
                                             toggleLike(post.id, post.liked)
                                         }
                                     >
                                         <FontAwesomeIcon icon={faHeart} />{" "}
+                                        <span className="text-xs">
+                                            {post.likes_count < 1
+                                                ? `Likes`
+                                                : `${post.likes_count} Likes`}
+                                        </span>
                                     </div>
-
                                     <div className="hover:text-slate-400">
                                         <FontAwesomeIcon icon={faComment} />{" "}
                                         {post.comments}
                                     </div>
                                 </div>
-
                                 {/* Title and content of the post */}
                                 <h2 className="text-left pl-2 mt-4 mb-2 text-lg">
                                     {post.title}
