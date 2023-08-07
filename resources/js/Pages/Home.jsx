@@ -1,61 +1,96 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, Head } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react';
-import BarLoader from '@/Components/BarLoader';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Link, Head } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
+import BarLoader from "@/Components/BarLoader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home({ auth, laravelVersion, phpVersion }) {
     const [posts, setPosts] = useState([]);
-    const [page, setPage] = useState(1)
-    const [isloading, setIsloaDing] = useState(true)
+    const [page, setPage] = useState(1);
+    const [isloading, setIsloaDing] = useState(true);
 
     // Faire un appel à l'API à cet endpoint pour récupérer tous les posts
     useEffect(() => {
         // Add a delay of 500 milliseconds before fetching the data
         setTimeout(() => {
             fetch(`/api/posts?per_page=5&page=${page}`)
-                .then(response => response.json())
-                .then(data => setPosts(prevPosts => [...prevPosts, ...data]));
-                setIsloaDing(false)
+                .then((response) => response.json())
+                .then((data) =>
+                    setPosts((prevPosts) => [...prevPosts, ...data])
+                );
+            setIsloaDing(false);
         }, 500);
     }, [page]);
 
-    
-
     const handleScroll = () => {
-       
-        if(window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight){
-            setIsloaDing(true)
-            setPage(prev => prev + 1)
+        if (
+            window.innerHeight + document.documentElement.scrollTop + 1 >=
+            document.documentElement.scrollHeight
+        ) {
+            setIsloaDing(true);
+            setPage((prev) => prev + 1);
         }
-    }
+    };
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll)
-    }, [])
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <>
-            <Head title="Home" />
-            <AuthenticatedLayout
-                user={auth.user}
-            >
-                <div className="mx-auto text-center">
-                    <h1 className="text-4xl m-5">Home</h1>
-                    {posts.map(post => (
-                        <div key={post.id}
-                            className="w-full md:w-1/2 mx-auto p-6 space-y-6 text-xl bg-purple-200 block m-4 rounded-xl"
-                        >
-                            <h2>{post.title}</h2>
-                            <h3>{post.content}</h3>
-                            {/* Accéder au nom de l'utilisateur */}
-                            <p style={{fontSize: 'small', textAlign: 'right'}}>Posted by {post.user.name}</p>   
+<>
+    <Head title="Home" />
+    <AuthenticatedLayout user={auth.user}>
+        <div className="mx-auto text-center space-y-10">
+            <h1 className="text-4xl m-5">Home</h1>
+            <div className="grid md:grid-cols-2 gap-8">
+                {posts.map((post) => (
+                    <div
+                        key={post.id}
+                        className="w-3/4 space-y-6 text-xl bg-purple-100 rounded-md m-auto pb-5"
+                    >
+                        {/* Author */}
+                        <p className="text-sm text-left p-2">
+                            Posted by {post.user.name}
+                        </p>
+
+                        {/* Image */}
+                        <div className="flex justify-center">
+                            <img
+                                src="https://picsum.photos/200/300"
+                                alt={post.title}
+                                className="w-full h-1/4 object-cover"
+                            />
                         </div>
-                    ))}
-                </div>
-                
-                {isloading && <BarLoader/>}
-            </AuthenticatedLayout>
-            
-        </>
+
+                        {/* Reaction Icons */}
+                        <div className="ReactionIcon flex items-start space-x-4 pl-2">
+                            <div className="hover:text-red-400">
+                                <FontAwesomeIcon icon={faHeart} /> {post.likes}
+                            </div>
+
+                            <div className="hover:text-slate-400">
+                                <FontAwesomeIcon icon={faComment} />{" "}
+                                {post.comments}
+                            </div>
+                        </div>
+
+                        {/* Title and content of the post */}
+                        <h2 className="text-left pl-2 mt-4 mb-2 ">
+                            {post.title}
+                        </h2>
+                        <p className=" mb-4 overflow-ellipsis pl-2">
+                            {post.content}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+        {isloading && <BarLoader />}
+    </AuthenticatedLayout>
+</>
+
     );
 }
+
