@@ -17,14 +17,14 @@ class PhotoController extends Controller
         {
             $file = $request->file('photo');
             $file_name = $file->getClientOriginalName();
-            $final_name = date('His') . $file_name;
+            $final_name = $file_name;
             print_r($final_name);
 
             $request->file('photo')->storeAs('images/', $final_name, 'public');
 
             // Si l'utilisateur est connecté et que nous voulons associer l'image à cet utilisateur.
             $user = Auth::user();
-            // $user->profile_photo_path = 'images/' . $final_name;
+            $user->image = $final_name;
             $user->save();
 
             return response()->json(["message" => "Successfully upload a profile photo"]);

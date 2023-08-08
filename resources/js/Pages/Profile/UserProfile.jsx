@@ -13,6 +13,7 @@ function Profile({ auth }) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [posts, setPosts] = useState([]);
+    
     const [titleValue, setTitleValue] = useState("");
     const [ContentValue, setContentValue] = useState("");
     const [updatingPostId, setUpdatingPostId] = useState(null);
@@ -21,71 +22,52 @@ function Profile({ auth }) {
 
     // Pour ajouter une photo de profil
     const [photo_data, set_photo_data] = useState('');
-    const handle_change = (file) => {
-    set_photo_data(file[0]);
-    };
+    // const handle_change = (file) => {
+    //     set_photo_data(user.image);
+    //     console.log(user.image);
+    // };
     const submit_photo_data = e => {
-    e.preventDefault();
-    const form_data = new FormData();
+        e.preventDefault();
+        const form_data = new FormData();
+        const id_image = document.getElementById('photo');
+        form_data.append('photo', id_image.files[0]);
+        console.log(id_image.files[0]);
 
-    form_data.append('photo', photo_data);
-    console.log(photo_data.name);
 
-
-    axios.post('http://127.0.0.1:8001/api/photo', form_data, {
-    headers: {
-    'Content-Type': 'multipart/form-data'
-    }
-    })
-    .then(res => {
-    console.log('response',  res);
-    })
-    .catch(err => {
-    console.error('Failure', err);
-    })
+        axios.post('http://127.0.0.1:8001/api/photo', form_data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                console.log('response', res);
+                set_photo_data(res.data.image);
+            })
+            .catch(err => {
+                console.error('Failure', err);
+            })
     };
-
-
-    // const [image, setImage] = useState(null);
-
-    // const handleImageChange = (e) => {
-    //     setImage(e.target.files[0]);
-    // };
-
-    // const handleImageUpload = () => {
-    //     const formData = new FormData();
-    //     formData.append('image', image);
-
-    //     axios.post('http://127.0.0.1:8001/upload-image', formData, {
-    //         headers: {
-    //             'Content-Type': 'multipart/form-data',
-    //         },
-    //     })
-    //         .then(response => {
-    //             console.log('Image uploaded successfully:', response.data.imagePath);
-    //         })
-    //         .catch(error => {
-    //             console.error('Image upload failed:', error.response.data.message);
-    //         });
-    // };
-
+    
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             biographie: user.biographie,
         });
+
     //  gestion de l'envoi du formulaire de la biographie
     const handleBioSubmit = (event) => {
         event.preventDefault();
 
         patch(route("bio.update"));
     };
-    // récuperer les posts de l'user
+     // récuperer les posts de l'user
     useEffect(() => {
+       
         axios.get("/posts").then((response) => {
             setPosts(response.data);
         });
     }, []);
+
     // ajouter un nouveau post
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -108,7 +90,7 @@ function Profile({ auth }) {
                 console.error("Error:", error);
             });
     };
-// Gestion du bouton qui permet de mettre à jour un post
+    // Gestion du bouton qui permet de mettre à jour un post
     const handleButtonClick = (id) => {
         setUpdatingPostId(id);
         const postToUpdate = posts.find(post => post.id === id);
@@ -127,37 +109,36 @@ function Profile({ auth }) {
     // Fontion pour mettre à jour un post
     const updatePost = () => {
         axios
-        .patch(`/posts/${updatingPostId}`, {
-            title: titleValue,
-            content: ContentValue,
-        })
-        .then((response) => {
-            setPosts(
-                posts.map((post) =>
-                    post.id === updatingPostId ? response.data : post
-                )
-            );
-            setUpdatingPostId(null);
-            setTitleValue("");
-            setContentValue("");
-        })
-        .catch((error) => {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.log(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error', error.message);
-            }
-        });
-
-
+            .patch(`/posts/${updatingPostId}`, {
+                title: titleValue,
+                content: ContentValue,
+            })
+            .then((response) => {
+                setPosts(
+                    posts.map((post) =>
+                        post.id === updatingPostId ? response.data : post
+                    )
+                );
+                setUpdatingPostId(null);
+                setTitleValue("");
+                setContentValue("");
+            })
+            .catch((error) => {
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            });
     };
+
 
     return (
         <>
@@ -167,17 +148,22 @@ function Profile({ auth }) {
                     <h1 className="text-center text-4xl m-2">Your Profile</h1>
                     {/* Formulaire de mise à jour de la biographie */}
                     <div className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2 rounded-xl">
-                        {/* <div>
-                            <input type="file" onChange={handleImageChange} />
-                            <button onClick={handleImageUpload}>Upload Image</button>
-                        </div> */}
+                        
+                        {/* Affichage des posts de l'user */}
+                        
+                            <div key={user.id}
+                                className="w-1/2 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+                            >
+                                <img src={user.image ? `http://127.0.0.1:5173/public/storage/images/${user.image}` : `./imagepardefaut.png`} alt="User Profile" />
+     </div>
+        
                         <form onSubmit={submit_photo_data} className="m-4">
                             <label htmlFor="photo">Upload Photo to profile</label>
                             <input
                                 name="photo"
                                 id="photo"
                                 type="file"
-                                onChange={e => handle_change(e.target.files)}
+                                // onChange={e => setData("image", e.target.files[0])}
                             >
                             </input>
                             <button type="submit" onClick={submit_photo_data}
@@ -275,43 +261,43 @@ function Profile({ auth }) {
                         >
                             <h2>Title: {post.title}</h2>
                             <p>Post: {post.content}</p>
-{/* Updating post form */}
+                            {/* Updating post form */}
                             {updatingPostId === post.id && (
                                 <div>
                                     <form onSubmit={(event) => { event.preventDefault(); updatePost() }}>
 
                                         <TextInput
-                                        type="text"
-                                        onChange={handleTitleChange}
+                                            type="text"
+                                            onChange={handleTitleChange}
                                             value={titleValue}
-                                        id="inputTitle"
+                                            id="inputTitle"
                                             required
-                                        autoComplete="inputTitle"
-                                    />
-                                    <TextInput
-                                        type="text"onChange={handleContentChange}
-                                        value={ContentValue}
-                                        id="inputContent"
+                                            autoComplete="inputTitle"
+                                        />
+                                        <TextInput
+                                            type="text" onChange={handleContentChange}
+                                            value={ContentValue}
+                                            id="inputContent"
                                             required
                                             autoComplete="inputContent"
                                         />
                                         <button
                                             type="submit"
-                                        className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                                         >
-                                    Confirm Update
+                                            Confirm Update
                                         </button>
                                     </form>
                                 </div>
                             )}
-{/* Update a post button qui va déclencher l'apparition du formulaire pour update un post */}
+                            {/* Update a post button qui va déclencher l'apparition du formulaire pour update un post */}
                             <button
                                 onClick={() => handleButtonClick(post.id)}
                                 className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                             >
                                 Update
                             </button>
-{/* Delete post button */}
+                            {/* Delete post button */}
                             <button
                                 onClick={() => deletePost(post.id)}
                                 className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
