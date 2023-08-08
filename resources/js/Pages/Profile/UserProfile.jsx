@@ -31,8 +31,8 @@ function Profile({ auth }) {
         form_data.append('photo', id_image.files[0]);
         console.log(id_image.files[0]);
 
-
-        axios.post('http://127.0.0.1:8001/api/photo', form_data, {
+        // Hanâa post adresse = http://127.0.0.1:8001/api/photo
+        axios.post('http://localhost:8000/api/photo', form_data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -147,10 +147,31 @@ function Profile({ auth }) {
             <AuthenticatedLayout user={auth.user}>
                 <div className="w-screen flex flex-col items-center justify-center space-y-6">
                     <h1 className="text-center text-4xl m-2">Your Profile</h1>
+                    {/* Show the picture and the form for sending new picture in the database */}
+                       
+                    <div key={user.id}
+                                className="w-1/4 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+                            >
+                                <img src={user.image ? `http://127.0.0.1:5173/public/storage/images/${user.image}` : `./imagepardefaut.png`} alt="User Profile" />
+     </div>
+        
+                        <form onSubmit={submit_photo_data} className="m-4">
+                            <label htmlFor="photo">Upload Photo to profile</label>
+                            <input
+                                name="photo"
+                                id="photo"
+                                type="file"
+                                // onChange={e => setData("image", e.target.files[0])}
+                            >
+                            </input>
+                            <button type="submit" onClick={submit_photo_data}
+                                className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 ">
+                                Upload Photo</button>
+                        </form>
                     {/* Formulaire de mise à jour de la biographie */}
                     <form
                         onSubmit={handleBioSubmit}
-                        className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2 rounded-xl"
+                        className="mt-6 space-y-6 ml-12 bg-gray-200 w-2/3 lg:w-1/2 p-2 rounded-xl"
                     >
                         <div className="w-3/2 p-6">
                             <InputLabel
@@ -200,7 +221,7 @@ function Profile({ auth }) {
 
                     <form
                         onSubmit={handleSubmit}
-                        className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-2/3 "
+                        className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 "
                     >
                         <h2 className="text-center m-2 font-bold">Add a new post</h2>
                         <input
@@ -230,7 +251,7 @@ function Profile({ auth }) {
                     {posts.map((post) => (
                         <div
                         key={post.id}
-                        className="w-2/3 lg:w-1/3 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+                        className="w-2/3 lg:w-1/3 ml-12 p-3 text-center m-4 space-y-2 bg-purple-200 block rounded-xl"
                       >
                       
                             {/* Vérifier l'état si l'user update ou pas */}
@@ -266,11 +287,11 @@ function Profile({ auth }) {
                                 </>
                             ) : (
                                 <>
-                                <div className="flex justify-center">
+                                <div className="flex justify-center h-64 object-cover">
                                     <img
                                         src="https://picsum.photos/200/300"
                                         alt={post.title}
-                                        className="w-full h-48 object-cover"
+                                        className="w-full"
                                     />
                                 </div>
                                     <h2>Title: {post.title}</h2>
