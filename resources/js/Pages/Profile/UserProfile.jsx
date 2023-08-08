@@ -242,7 +242,6 @@ function Profile({ auth }) {
                                         className="w-full h-48 object-fit"
                                     />
                                 </div>
-
                                     <h2>Title: {post.title}</h2>
                                     <p>Content: {post.content}</p>
                                     <button

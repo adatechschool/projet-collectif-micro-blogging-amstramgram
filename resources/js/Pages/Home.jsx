@@ -143,7 +143,11 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                     </div>
                 </div>
 
-                {isloading && <BarLoader />}
+                {isloading && (
+                    <div className="loading-overlay">
+                        <BarLoader />
+                    </div>
+                )}
             </AuthenticatedLayout>
         </>
     );
