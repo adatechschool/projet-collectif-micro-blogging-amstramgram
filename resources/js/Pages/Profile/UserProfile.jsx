@@ -13,6 +13,7 @@ function Profile({ auth }) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [posts, setPosts] = useState([]);
+    
     const [titleValue, setTitleValue] = useState("");
     const [ContentValue, setContentValue] = useState("");
     const [updatingPostId, setUpdatingPostId] = useState(null);
@@ -20,22 +21,51 @@ function Profile({ auth }) {
 
     const user = usePage().props.auth.user;
 
+    // Pour ajouter une photo de profil
+    const [photo_data, set_photo_data] = useState('');
+ 
+    const submit_photo_data = e => {
+        e.preventDefault();
+        const form_data = new FormData();
+        const id_image = document.getElementById('photo');
+        form_data.append('photo', id_image.files[0]);
+        console.log(id_image.files[0]);
+
+
+        axios.post('http://127.0.0.1:8001/api/photo', form_data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                console.log('response', res);
+                set_photo_data(res.data.image);
+            })
+            .catch(err => {
+                console.error('Failure', err);
+            })
+    };
+    
+
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             biographie: user.biographie,    
         });
+
     //  gestion de l'envoi du formulaire de la biographie
     const handleBioSubmit = (event) => {
         event.preventDefault();
 
         patch(route("bio.update"));
     };
-    // récuperer les posts de l'user
+     // récuperer les posts de l'user
     useEffect(() => {
+       
         axios.get("/posts").then((response) => {
             setPosts(response.data);
         });
     }, []);
+
     // ajouter un nouveau post
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -107,7 +137,9 @@ function Profile({ auth }) {
                     console.log("Error", error.message);
                 }
             });
+         
     };
+
 
     return (
         <>
@@ -118,7 +150,7 @@ function Profile({ auth }) {
                     {/* Formulaire de mise à jour de la biographie */}
                     <form
                         onSubmit={handleBioSubmit}
-                        className="mt-6 space-y-6 ml-12 bg-gray-200 p-2 rounded-xl w-2/3 lg:w-2/3"
+                        className="mt-6 space-y-6 ml-12 bg-gray-200 w-1/2 p-2 rounded-xl"
                     >
                         <div className="w-3/2 p-6">
                             <InputLabel
@@ -126,17 +158,17 @@ function Profile({ auth }) {
                                 value="Biographie"
                             />
 
-                            <TextInput
-                                id="biographie"
-                                type="text"
-                                className="mt-1 block w-10/12 te"
-                                value={data.biographie}
-                                onChange={(e) =>
-                                    setData("biographie", e.target.value)
-                                }
-                                required
-                                autoComplete="biographie"
-                            />
+                                <TextInput
+                                    id="biographie"
+                                    type="text"
+                                    className="mt-1 block w-10/12 te"
+                                    value={data.biographie}
+                                    onChange={(e) =>
+                                        setData("biographie", e.target.value)
+                                    }
+                                    required
+                                    autoComplete="biographie"
+                                />
 
                             <InputError
                                 className="mt-2"
@@ -218,8 +250,7 @@ function Profile({ auth }) {
                                     <div className="flex items-center">
                                         <p className="mr-2">Content:</p>
                                         <TextInput
-                                            type="text"
-                                            onChange={handleContentChange}
+                                            type="text" onChange={handleContentChange}
                                             value={ContentValue}
                                             id="inputContent"
                                             required
@@ -269,3 +300,4 @@ function Profile({ auth }) {
 }
 
 export default Profile;
+
