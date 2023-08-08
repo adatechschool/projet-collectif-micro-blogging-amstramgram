@@ -88,7 +88,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                         {posts.map((post) => (
                             <div
                                 key={post.id}
-                                className="w-3/4 space-y-6 text-xl bg-purple-100 rounded-md m-auto pb-5"
+                                className="w-3/4 space-y-2 text-xl bg-purple-100 rounded-md m-auto pb-5"
                             >
                                 {/* Author */}
                                 <p className="text-sm text-left p-2">

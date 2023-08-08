@@ -22,7 +22,7 @@ function Profile({ auth }) {
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            biographie: user.biographie,
+            biographie: user.biographie,    
         });
     //  gestion de l'envoi du formulaire de la biographie
     const handleBioSubmit = (event) => {
@@ -239,7 +239,7 @@ function Profile({ auth }) {
                                     <img
                                         src="https://picsum.photos/200/300"
                                         alt={post.title}
-                                        className="w-full h-48 object-fit"
+                                        className="w-full h-48 object-cover"
                                     />
                                 </div>
                                     <h2>Title: {post.title}</h2>
