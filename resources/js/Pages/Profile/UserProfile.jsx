@@ -33,7 +33,7 @@ function Profile({ auth }) {
 
         // Hanâa post adresse = http://127.0.0.1:8001/api/photo
         axios
-            .post("http://localhost:8000/api/photo", form_data, {
+            .post("http://127.0.0.1:8001/api/photo", form_data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -70,7 +70,7 @@ function Profile({ auth }) {
 
     const fetchPostData = () => {
         axios
-            .get("/posts") // replace this with your actual endpoint
+            .get("/api/posts") // replace this with your actual endpoint
             .then((response) => {
                 setPosts(response.data);
                 // set_photo_post();
@@ -197,8 +197,8 @@ function Profile({ auth }) {
                         <img
                             src={
                                 userData && userData.image
-                                    ? `http://127.0.0.1:5173/public/storage/images/${userData.image}`
-                                    : `./imagepardefaut.png`
+                                    ? `http://127.0.0.1:5173/storage/app/public/images/${userData.image}`
+                                    : `http://127.0.0.1:5173/storage/app/public/images/imagepardefault.png`
                             }
                             alt="User Profile"
                         />
@@ -358,7 +358,7 @@ function Profile({ auth }) {
                                     <div className="flex justify-center h-64">
                                         <img
                                           className="h-4/4 w-1/2"
-                                            src={`http://127.0.0.1:5173/public/storage/images/${post.image}`}
+                                            src={`http://127.0.0.1:5173/storage/app/public/images/${post.image}`}
                                         />
                                     </div>
 

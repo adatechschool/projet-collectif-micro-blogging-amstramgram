@@ -25,7 +25,7 @@ class PostController extends Controller
             ->each
             ->append('liked');
 
-        return response()->json($posts);
+        return response()->assertStatus(201)->json($posts);
     }
 
 

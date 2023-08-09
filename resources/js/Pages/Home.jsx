@@ -23,7 +23,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
     useEffect(() => {
         // Add a delay of 500 milliseconds before fetching the data
         setTimeout(() => {
-            fetch(`/api/posts?per_page=5&page=${page}`)
+            fetch(`http://127.0.0.1:8001/api/posts?per_page=5&page=${page}`)
                 .then((response) => response.json())
                 .then((data) =>
                     setPosts((prevPosts) => [...prevPosts, ...data])
