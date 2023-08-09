@@ -23,6 +23,7 @@ function Profile({ auth }) {
 
     // Pour ajouter une photo de profil
     const [photo_data, set_photo_data] = useState("");
+    // const [photo_post, set_photo_post] = useState("");
 
     const submit_photo_data = (e) => {
         e.preventDefault();
@@ -67,6 +68,23 @@ function Profile({ auth }) {
         fetchUserData();
     }, []);
 
+    const fetchPostData = () => {
+        axios
+            .get("/posts") // replace this with your actual endpoint
+            .then((response) => {
+                setPosts(response.data);
+                // set_photo_post();
+                // console.log(response.data);
+            })
+            .catch((error) => {
+                console.error("There was an error!", error);
+            });
+    };
+
+    useEffect(() => {
+        fetchPostData();
+    }, []);
+
     ///
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
@@ -80,12 +98,16 @@ function Profile({ auth }) {
 
         patch(route("bio.update"));
     };
-    // récuperer les posts de l'user
-    useEffect(() => {
-        axios.get("/posts").then((response) => {
-            setPosts(response.data);
-        });
-    }, []);
+    // // récuperer les posts de l'user
+    // useEffect(() => {
+    //     axios.get("/posts")
+    //     .then((response) => {
+    //         setPosts(response.data)
+    //         console.log(response.data[0].image);
+    //         set_photo_post(response.data[0].image)
+    //         ;
+    //     });
+    // }, []);
 
     // ajouter un nouveau post
     const handleSubmit = (event) => {
@@ -335,11 +357,11 @@ function Profile({ auth }) {
                                 <>
                                     <div className="flex justify-center h-64">
                                         <img
-                                            src="https://picsum.photos/200/300"
-                                            alt={post.title}
-                                            className="w-full object-fit h-full"
+                                          className="h-4/4 w-1/2"
+                                            src={`http://127.0.0.1:5173/public/storage/images/${post.image}`}
                                         />
                                     </div>
+
                                     <h2>Title: {post.title}</h2>
                                     <p>Content: {post.content}</p>
                                     <button

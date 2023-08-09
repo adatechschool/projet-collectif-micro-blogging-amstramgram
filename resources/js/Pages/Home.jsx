@@ -41,17 +41,16 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
         if (response.status === 200) {
             // Map over your posts and update the liked post
             setPosts(
-                posts.map(
-                    (post) =>
-                        post.id === postId
-                            ? {
-                                  ...post,
-                                  liked: !isLiked,
-                                  likes_count: isLiked
-                                      ? post.likes_count - 1
-                                      : post.likes_count + 1,
-                              } 
-                            : post
+                posts.map((post) =>
+                    post.id === postId
+                        ? {
+                              ...post,
+                              liked: !isLiked,
+                              likes_count: isLiked
+                                  ? post.likes_count - 1
+                                  : post.likes_count + 1,
+                          }
+                        : post
                 )
             );
         }
@@ -82,13 +81,13 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
         <>
             <Head title="Home" />
             <AuthenticatedLayout user={auth.user}>
-                <div className="mx-auto text-center space-y-10">
+                <div className="mx-auto text-center space-y-10 ">
                     <h1 className="text-4xl m-5">Home</h1>
-                    <div className="grid md:grid-cols-2 gap-8">
+                    <div className="grid md:grid-cols-2 lg:md:grid-cols-3 gap-6">
                         {posts.map((post) => (
                             <div
                                 key={post.id}
-                                className="w-3/4 space-y-2 text-xl bg-purple-100 rounded-md m-auto pb-5"
+                                className=" space-y-2 text-xl bg-purple-100 rounded-md m-4 pb-5"
                             >
                                 {/* Author */}
                                 <p className="text-sm text-left p-2">
@@ -98,10 +97,12 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                                 {/* Image */}
                                 <div className="flex justify-center">
                                     <img
-                                        src="https://picsum.photos/200/300"
-                                        alt={post.title}
-                                        className="w-full h-1/4 object-cover"
-                                    />
+                                    className="h-72 w-full"
+                                    src=
+                                    {post && post.image
+                                        ? `http://127.0.0.1:5173/public/storage/images/${post.image}`
+                                        : `https://picsum.photos/200/300`}
+                                        />
                                 </div>
 
                                 {/* Reaction Icons */}
