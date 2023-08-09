@@ -13,43 +13,65 @@ function Profile({ auth }) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [posts, setPosts] = useState([]);
-    
+    const [userData, setUserData] = useState(null);
     const [titleValue, setTitleValue] = useState("");
     const [ContentValue, setContentValue] = useState("");
     const [updatingPostId, setUpdatingPostId] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false);
-
+    const [photoUploadSuccess, setPhotoUploadSuccess] = useState(false);
     const user = usePage().props.auth.user;
 
     // Pour ajouter une photo de profil
-    const [photo_data, set_photo_data] = useState('');
- 
-    const submit_photo_data = e => {
+    const [photo_data, set_photo_data] = useState("");
+
+    const submit_photo_data = (e) => {
         e.preventDefault();
         const form_data = new FormData();
-        const id_image = document.getElementById('photo');
-        form_data.append('photo', id_image.files[0]);
-        console.log(id_image.files[0]);
+        const id_image = document.getElementById("photo");
+        form_data.append("photo", id_image.files[0]);
 
         // Hanâa post adresse = http://127.0.0.1:8001/api/photo
-        axios.post('http://localhost:8000/api/photo', form_data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(res => {
-                console.log('response', res);
+        axios
+            .post("http://localhost:8000/api/photo", form_data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((res) => {
+                // console.log('response', res);
                 set_photo_data(res.data.image);
+                fetchUserData();
+                setPhotoUploadSuccess(true);
+                // After 3 seconds, set photoUploadSuccess back to false
+                setTimeout(() => {
+                    setPhotoUploadSuccess(false);
+                }, 3000);
             })
-            .catch(err => {
-                console.error('Failure', err);
-            })
+            .catch((err) => {
+                console.error("Failure", err);
+            });
     };
-    
+    // Fetch user Data
+    const fetchUserData = () => {
+        axios
+            .get("/user") // replace this with your actual endpoint
+            .then((response) => {
+                setUserData(response.data);
+            })
+            .catch((error) => {
+                console.error("There was an error!", error);
+            });
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    ///
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            biographie: user.biographie,    
+            biographie: user.biographie,
         });
 
     //  gestion de l'envoi du formulaire de la biographie
@@ -58,9 +80,8 @@ function Profile({ auth }) {
 
         patch(route("bio.update"));
     };
-     // récuperer les posts de l'user
+    // récuperer les posts de l'user
     useEffect(() => {
-       
         axios.get("/posts").then((response) => {
             setPosts(response.data);
         });
@@ -137,9 +158,7 @@ function Profile({ auth }) {
                     console.log("Error", error.message);
                 }
             });
-         
     };
-
 
     return (
         <>
@@ -148,26 +167,51 @@ function Profile({ auth }) {
                 <div className="w-screen flex flex-col items-center justify-center space-y-6">
                     <h1 className="text-center text-4xl m-2">Your Profile</h1>
                     {/* Show the picture and the form for sending new picture in the database */}
-                       
-                    <div key={user.id}
-                                className="w-1/4 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+
+                    <div
+                        key={user.id}
+                        className="w-1/4 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
+                    >
+                        <img
+                            src={
+                                userData && userData.image
+                                    ? `http://127.0.0.1:5173/public/storage/images/${userData.image}`
+                                    : `./imagepardefaut.png`
+                            }
+                            alt="User Profile"
+                        />
+                    </div>
+
+                    <form onSubmit={submit_photo_data} className="m-4">
+                        <label htmlFor="photo">Upload Photo to profile</label>
+                        <input
+                            name="photo"
+                            id="photo"
+                            type="file"
+                            // onChange={e => setData("image", e.target.files[0])}
+                        ></input>{" "}
+                        <div className="flex items-center gap-4">
+                            <button
+                                type="submit"
+                                onClick={submit_photo_data}
+                                className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                             >
-                                <img src={user.image ? `http://127.0.0.1:5173/public/storage/images/${user.image}` : `./imagepardefaut.png`} alt="User Profile" />
-     </div>
-        
-                        <form onSubmit={submit_photo_data} className="m-4">
-                            <label htmlFor="photo">Upload Photo to profile</label>
-                            <input
-                                name="photo"
-                                id="photo"
-                                type="file"
-                                // onChange={e => setData("image", e.target.files[0])}
+                                Upload Photo
+                            </button>
+                            <Transition
+                                show={photoUploadSuccess}
+                                enter="transition ease-in-out"
+                                enterFrom="opacity-0"
+                                leave="transition ease-in-out"
+                                leaveTo="opacity-0"
                             >
-                            </input>
-                            <button type="submit" onClick={submit_photo_data}
-                                className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 ">
-                                Upload Photo</button>
-                        </form>
+                                <p className="text-sm text-gray-600">
+                                    Succesfuly added.
+                                </p>
+                            </Transition>
+                        </div>
+                    </form>
+
                     {/* Formulaire de mise à jour de la biographie */}
                     <form
                         onSubmit={handleBioSubmit}
@@ -179,17 +223,17 @@ function Profile({ auth }) {
                                 value="Biographie"
                             />
 
-                                <TextInput
-                                    id="biographie"
-                                    type="text"
-                                    className="mt-1 block w-10/12 te"
-                                    value={data.biographie}
-                                    onChange={(e) =>
-                                        setData("biographie", e.target.value)
-                                    }
-                                    required
-                                    autoComplete="biographie"
-                                />
+                            <TextInput
+                                id="biographie"
+                                type="text"
+                                className="mt-1 block w-10/12 te"
+                                value={data.biographie}
+                                onChange={(e) =>
+                                    setData("biographie", e.target.value)
+                                }
+                                required
+                                autoComplete="biographie"
+                            />
 
                             <InputError
                                 className="mt-2"
@@ -223,7 +267,9 @@ function Profile({ auth }) {
                         onSubmit={handleSubmit}
                         className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 "
                     >
-                        <h2 className="text-center m-2 font-bold">Add a new post</h2>
+                        <h2 className="text-center m-2 font-bold">
+                            Add a new post
+                        </h2>
                         <input
                             type="text"
                             value={title}
@@ -250,10 +296,9 @@ function Profile({ auth }) {
                     {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
                     {posts.map((post) => (
                         <div
-                        key={post.id}
-                        className="w-2/3 lg:w-1/3 ml-12 p-3 text-center m-4 space-y-2 bg-purple-200 block rounded-xl"
-                      >
-                      
+                            key={post.id}
+                            className="w-2/3 lg:w-1/3 ml-12 p-3 text-center m-4 space-y-2 bg-purple-200 block rounded-xl"
+                        >
                             {/* Vérifier l'état si l'user update ou pas */}
                             {isUpdating && updatingPostId === post.id ? (
                                 <>
@@ -271,7 +316,8 @@ function Profile({ auth }) {
                                     <div className="flex items-center">
                                         <p className="mr-2">Content:</p>
                                         <TextInput
-                                            type="text" onChange={handleContentChange}
+                                            type="text"
+                                            onChange={handleContentChange}
                                             value={ContentValue}
                                             id="inputContent"
                                             required
@@ -287,13 +333,13 @@ function Profile({ auth }) {
                                 </>
                             ) : (
                                 <>
-                                <div className="flex justify-center h-64 object-cover">
-                                    <img
-                                        src="https://picsum.photos/200/300"
-                                        alt={post.title}
-                                        className="w-full"
-                                    />
-                                </div>
+                                    <div className="flex justify-center h-64">
+                                        <img
+                                            src="https://picsum.photos/200/300"
+                                            alt={post.title}
+                                            className="w-full object-fit h-full"
+                                        />
+                                    </div>
                                     <h2>Title: {post.title}</h2>
                                     <p>Content: {post.content}</p>
                                     <button
@@ -321,4 +367,3 @@ function Profile({ auth }) {
 }
 
 export default Profile;
-

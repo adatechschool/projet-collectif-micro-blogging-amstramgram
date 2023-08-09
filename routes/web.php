@@ -3,6 +3,7 @@
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\UserController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,8 @@ Route::get('/api/posts', function (\Illuminate\Http\Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts/{post}/like', [PostController::class, 'like']);
     Route::post('/posts/{post}/unlike', [PostController::class, 'unlike']);
+    Route::get('/user', [UserController::class, 'getCurrentUser']);
+
 });
 
 
