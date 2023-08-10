@@ -80,8 +80,12 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
     return (
         <>
         
-           <Head title="Home" />
-            <AuthenticatedLayout user={auth.user}>
+           
+            <AuthenticatedLayout 
+            user={auth.user}
+                header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Home</h2>} >
+            <Head title="Home" />
+
             <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-purple-900 selection:bg-red-500 selection:text-white">
                 <div className="mx-auto text-center space-y-10 m-5 ">
                     {/* <h1 className="text-4xl m-5">Home</h1> */}

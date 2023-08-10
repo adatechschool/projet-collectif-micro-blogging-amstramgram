@@ -184,8 +184,12 @@ function Profile({ auth }) {
 
     return (
         <>
+            
+            <AuthenticatedLayout 
+            user={auth.user}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Your Profile</h2>}
+        >
             <Head title="Profile" />
-            <AuthenticatedLayout user={auth.user}>
 
                 <div class="sm:flex sm:flex-col sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-purple-900 selection:bg-red-500 selection:text-white">
                     <div className="m-3">
@@ -217,7 +221,7 @@ function Profile({ auth }) {
                                 id="photo"
                                 type="file"
                             // onChange={e => setData("image", e.target.files[0])}
-                            ></input>{" "}
+                            ></input>
                             <div className="flex items-center gap-4">
                                 <button
                                     type="submit"
