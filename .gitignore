@@ -18,5 +18,6 @@ yarn-error.log
 /.idea
 /.vscode
 /.DS_Store
+/storage/.DS_Store
 /resources/.DS_Store
 /resources/js/.DS_Store
