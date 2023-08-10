@@ -3,10 +3,10 @@ import { Link } from '@inertiajs/react';
 
 export default function Guest({ children }) {
     return (
-        <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+        <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-purple-900 selection:bg-red-500 selection:text-white">
             <div>
                 <Link href="/">
-                    <ApplicationLogo className="w-full h-20 fill-current text-gray-500" />
+                    <ApplicationLogo className="w-80 h-20 fill-current text-gray-500" />
                 </Link>
             </div>
 
