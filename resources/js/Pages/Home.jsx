@@ -79,34 +79,40 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
 
     return (
         <>
-            <Head title="Home" />
+        
+           <Head title="Home" />
             <AuthenticatedLayout user={auth.user}>
-                <div className="mx-auto text-center space-y-10 ">
-                    <h1 className="text-4xl m-5">Home</h1>
-                    <div className="grid md:grid-cols-2 lg:md:grid-cols-3 gap-6">
-                        {posts.map((post) => (
-                            <div
-                                key={post.id}
-                                className=" space-y-2 text-xl bg-purple-100 rounded-md m-4 pb-5"
-                            >
-                                {/* Author */}
-                                <p className="text-sm text-left p-2">
-                                    Posted by {post.user.name}
-                                </p>
+            <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-purple-900 selection:bg-red-500 selection:text-white">
+                <div className="mx-auto text-center space-y-10 m-5 ">
+                    {/* <h1 className="text-4xl m-5">Home</h1> */}
+                    <div class="max-w-7xl mx-auto p-6 lg:p-8">
+                       
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                                
+                                    {posts.map((post) => (
+                                <div className="flex flex-col items-center justify-center scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+                                    <div key={post.id}
 
-                                {/* Image */}
-                                <div className="flex justify-center">
-                                    <img
-                                    className="h-72 w-full"
-                                    src=
-                                    {post && post.image
-                                        ? `http://127.0.0.1:5173/public/storage/images/${post.image}`
-                                        : `https://picsum.photos/200/300`}
-                                        />
-                                </div>
+                    
+                                         className=" space-y-2 text-xl bg-purple-100 rounded-md m-4 pb-5">
+                                            {/* Author */}
+                                            <p className="text-sm text-left p-2">
+                                                Posted by {post.user.name}
+                                            </p>
 
-                                {/* Reaction Icons */}
-                                <div className="ReactionIcon flex items-start space-x-4 pl-2">
+                                        {/* Image */}
+                                       
+                                        <div className="rounded-full">
+                                            <img
+                                                className="w-82 p-3 rounded-3xl"
+                                                src={post && post.image
+                                    ? `http://127.0.0.1:5173/public/storage/images/${post.image}`
+                                    : `https://picsum.photos/200/300`}/>
+                                       </div>
+                                </div>    
+                                       {/* Reaction Icons */}
+                            <div className="flex flex-col items-center justify-center mt-6 text-xl font-semibold text-gray-900 dark:text-white">
+                                <div className="ReactionIcon flex items-start space-x-4 pl-2 ">
                                     <div
                                         className={`hover:text-red-400 cursor-pointer ${
                                             post.liked ? "text-red-500" : ""
@@ -127,6 +133,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                                         {post.comments}
                                     </div>
                                 </div>
+                                
                                 {/* Title and content of the post */}
                                 <h2 className="text-left pl-2 mt-4 mb-2 text-lg">
                                     {post.title}
@@ -140,7 +147,10 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                                         : truncateContent(post.content)}
                                 </p>
                             </div>
+                            </div>
                         ))}
+                    </div>
+                  
                     </div>
                 </div>
 
@@ -149,7 +159,9 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                         <BarLoader />
                     </div>
                 )}
+                </div>
             </AuthenticatedLayout>
         </>
+        
     );
 }

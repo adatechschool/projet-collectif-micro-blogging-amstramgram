@@ -70,7 +70,7 @@ function Profile({ auth }) {
 
     const fetchPostData = () => {
         axios
-            .get("/api/posts") // replace this with your actual endpoint
+            .get("api/posts") // replace this with your actual endpoint
             .then((response) => {
                 setPosts(response.data);
                 // set_photo_post();
@@ -186,10 +186,16 @@ function Profile({ auth }) {
         <>
             <Head title="Profile" />
             <AuthenticatedLayout user={auth.user}>
-                <div className="w-screen flex flex-col items-center justify-center space-y-6">
-                    <h1 className="text-center text-4xl m-2">Your Profile</h1>
-                    {/* Show the picture and the form for sending new picture in the database */}
 
+            <div class="sm:flex sm:flex-col sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-purple-900 selection:bg-red-500 selection:text-white">
+            <div className="m-3">
+                    </div>
+                <div className="w-screen flex flex-col items-center justify-center space-y-6">
+                    {/* <h1 className="text-center text-white text-4xl m-2">Your Profile</h1> */}
+                    {/* Show the picture and the form for sending new picture in the database */}
+                    <form onSubmit={submit_photo_data} 
+                          className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 ">
+                    <div className="flex flex-col justify-center items-center">
                     <div
                         key={user.id}
                         className="w-1/4 ml-12 p-6 text-center m-4 space-y-4 bg-purple-200 block rounded-xl"
@@ -203,8 +209,8 @@ function Profile({ auth }) {
                             alt="User Profile"
                         />
                     </div>
-
-                    <form onSubmit={submit_photo_data} className="m-4">
+                    </div>
+                    
                         <label htmlFor="photo">Upload Photo to profile</label>
                         <input
                             name="photo"
@@ -279,7 +285,7 @@ function Profile({ auth }) {
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-gray-600">Saved.</p>
+                                <p className="text-sm text-gray-600">Saved</p>
                             </Transition>
                         </div>
                     </form>
@@ -316,6 +322,7 @@ function Profile({ auth }) {
 
                     {/* Affichage des posts de l'user */}
                     {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
+                    <div className="flex flex-col justify-center items-center bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2">
                     {posts.map((post) => (
                         <div
                             key={post.id}
@@ -380,8 +387,14 @@ function Profile({ auth }) {
                                     </button>
                                 </>
                             )}
+                            
                         </div>
                     ))}
+                    
+                    </div>
+                    <div className="m-4">
+                    </div>
+                    </div>
                 </div>
             </AuthenticatedLayout>
         </>
