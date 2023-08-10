@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     // Soit ça : Route::patch('/profile', [PostController::class, 'update'])->name('profile.update');
     // Soit ça :
     Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::patch('/bio', [PostController::class, 'updateBio'])->name('bio.update');
 
     // Récupérez les images, en s'assurant que c'est l'id de l'utilisateur connecté
@@ -80,17 +81,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-
-// Route::get('/api/posts', function () {
-//     return App\Models\Post::with('user')->orderBy('created_at', 'desc')->get();
-// });
-// Route::get('/api/posts', function () {
-//     return App\Models\Post::with('user')->get();
-// });
-
 // Créer un endpoint pour uploader la photo de profil
 // routes/api.php
 Route::post('api/photo', [PhotoController::class, 'uploadPhoto']);
+
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/post.php';

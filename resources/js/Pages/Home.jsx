@@ -53,6 +53,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                         : post
                 )
             );
+            console.log(posts);
         }
     };
 
@@ -83,28 +84,41 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
             <AuthenticatedLayout user={auth.user}>
                 <div className="mx-auto text-center space-y-10 ">
                     <h1 className="text-4xl m-5">Home</h1>
-                    <div className="grid md:grid-cols-2 lg:md:grid-cols-3 gap-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {posts.map((post) => (
                             <div
-                                key={post.id}
-                                className=" space-y-2 text-xl bg-purple-100 rounded-md m-4 pb-5"
+                                key={post.id} // This is the correct usage of key prop
+                                className="space-y-2 text-xl bg-purple-100 rounded-md m-4 pb-5"
                             >
-                                {/* Author */}
-                                <p className="text-sm text-left p-2">
-                                    Posted by {post.user.name}
-                                </p>
-
-                                {/* Image */}
-                                <div className="flex justify-center">
+                                <div className="flex items-center m-2">
+                                    {/* Displaying the user's profile image */}
                                     <img
-                                    className="h-72 w-full"
-                                    src=
-                                    {post && post.image
-                                        ? `http://127.0.0.1:5173/public/storage/images/${post.image}`
-                                        : `https://picsum.photos/200/300`}
-                                        />
+                                        src={
+                                            post.user && post.user.image
+                                                ? `http://127.0.0.1:5173/public/storage/images/${post.user.image}`
+                                                : `https://picsum.photos/200/300`
+                                        }
+                                        alt="UserProfileImage"
+                                        className="rounded-full w-16 h-16 border border-gray-300"
+                                    />
+                                    {/* Author */}
+                                    <p className="text-sm text-left p-2">
+                                        Posted by {post.user.name}
+                                    </p>
                                 </div>
 
+                                {/* Image */}
+                                <div className="flex justify-center aspect-w-1 aspect-h-1 overflow-hidden">
+                                    <img
+                                        className="object-cover w-full h-96"
+                                        src={
+                                            post && post.image
+                                                ? `http://127.0.0.1:5173/public/storage/images/${post.image}`
+                                                : `https://picsum.photos/200/300`
+                                        }
+                                        alt="Post"
+                                    />
+                                </div>
                                 {/* Reaction Icons */}
                                 <div className="ReactionIcon flex items-start space-x-4 pl-2">
                                     <div

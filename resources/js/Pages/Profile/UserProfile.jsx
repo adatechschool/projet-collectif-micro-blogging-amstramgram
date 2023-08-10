@@ -5,35 +5,44 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { Transition } from "@headlessui/react";
+// import { Transition } from "@headlessui/react";
+import TransitionSucces from "@/Components/TransitionSucces";
 
 import axios from "axios";
 
 function Profile({ auth }) {
+    // Profile States
+    const [userData, setUserData] = useState(null);
+    const [photo_data, set_photo_data] = useState("");
+    const [photoUploadSuccess, setPhotoUploadSuccess] = useState(false);
+
+    // Post States
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [imagePost, setImagePost] = useState("");
     const [posts, setPosts] = useState([]);
-    const [userData, setUserData] = useState(null);
+    const [postCreatedSuccess, setPostCreatedSuccess] = useState(false);
+    const [postUpdatedSuccess, setPostUpdatedSuccess] = useState(false);
+    const [postDeletedSuccess, setPostDeletedSuccess] = useState(false);
+
+    // Post Update States
     const [titleValue, setTitleValue] = useState("");
-    const [ContentValue, setContentValue] = useState("");
+    const [contentValue, setContentValue] = useState("");
     const [updatingPostId, setUpdatingPostId] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [photoUploadSuccess, setPhotoUploadSuccess] = useState(false);
-    const user = usePage().props.auth.user;
 
     // Pour ajouter une photo de profil
-    const [photo_data, set_photo_data] = useState("");
-    // const [photo_post, set_photo_post] = useState("");
+    // const [photo_data, set_photo_data] = useState("");
+
+    const user = usePage().props.auth.user;
 
     const submit_photo_data = (e) => {
         e.preventDefault();
         const form_data = new FormData();
         const id_image = document.getElementById("photo");
         form_data.append("photo", id_image.files[0]);
-
-        // Hanâa post adresse = http://127.0.0.1:8001/api/photo
         axios
-            .post("http://localhost:8000/api/photo", form_data, {
+            .post("http://127.0.0.1:8000/api/photo", form_data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -43,7 +52,6 @@ function Profile({ auth }) {
                 set_photo_data(res.data.image);
                 fetchUserData();
                 setPhotoUploadSuccess(true);
-                // After 3 seconds, set photoUploadSuccess back to false
                 setTimeout(() => {
                     setPhotoUploadSuccess(false);
                 }, 3000);
@@ -52,10 +60,10 @@ function Profile({ auth }) {
                 console.error("Failure", err);
             });
     };
-    // Fetch user Data
+    // Fetch user Data et post Data
     const fetchUserData = () => {
         axios
-            .get("/user") // replace this with your actual endpoint
+            .get("/user")
             .then((response) => {
                 setUserData(response.data);
             })
@@ -64,17 +72,11 @@ function Profile({ auth }) {
             });
     };
 
-    useEffect(() => {
-        fetchUserData();
-    }, []);
-
     const fetchPostData = () => {
         axios
-            .get("/posts") // replace this with your actual endpoint
+            .get("/posts")
             .then((response) => {
                 setPosts(response.data);
-                // set_photo_post();
-                // console.log(response.data);
             })
             .catch((error) => {
                 console.error("There was an error!", error);
@@ -82,6 +84,7 @@ function Profile({ auth }) {
     };
 
     useEffect(() => {
+        fetchUserData();
         fetchPostData();
     }, []);
 
@@ -98,26 +101,38 @@ function Profile({ auth }) {
 
         patch(route("bio.update"));
     };
-    // // récuperer les posts de l'user
-    // useEffect(() => {
-    //     axios.get("/posts")
-    //     .then((response) => {
-    //         setPosts(response.data)
-    //         console.log(response.data[0].image);
-    //         set_photo_post(response.data[0].image)
-    //         ;
-    //     });
-    // }, []);
 
     // ajouter un nouveau post
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        axios.post("/posts", { title, content }).then((response) => {
-            setPosts([...posts, response.data]);
-            setTitle("");
-            setContent("");
-        });
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        // Check if imagePost has a file
+        if (document.getElementById("imagePost").files[0]) {
+            formData.append(
+                "imagePost",
+                document.getElementById("imagePost").files[0]
+            );
+        }
+
+        axios
+            .post("/posts", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                setPosts([response.data, ...posts]);
+                setTitle("");
+                setContent("");
+                setImagePost("");
+                setPostCreatedSuccess(true);
+                setTimeout(() => {
+                    setPostCreatedSuccess(false);
+                }, 3000);
+            });
     };
 
     // Pour supprimer un post
@@ -126,11 +141,16 @@ function Profile({ auth }) {
             .delete(`/posts/${id}`)
             .then((response) => {
                 setPosts(posts.filter((post) => post.id !== id));
+                setPostDeletedSuccess(true);
+                setTimeout(() => {
+                    setPostDeletedSuccess(false);
+                }, 3000);
             })
             .catch((error) => {
                 console.error("Error:", error);
             });
     };
+
     // Gestion du bouton qui permet de mettre à jour un post
     const handleButtonClick = (id) => {
         setUpdatingPostId(id);
@@ -149,11 +169,13 @@ function Profile({ auth }) {
         setContentValue(event.target.value);
     };
     // Fontion pour mettre à jour un post
-    const updatePost = () => {
+    const updatePost = (e) => {
+        e.preventDefault();
         axios
             .patch(`/posts/${updatingPostId}`, {
                 title: titleValue,
-                content: ContentValue,
+                content: contentValue,
+                // imagePost: document.getElementById("imageUpdate")
             })
             .then((response) => {
                 setPosts(
@@ -164,7 +186,11 @@ function Profile({ auth }) {
                 setUpdatingPostId(null);
                 setTitleValue("");
                 setContentValue("");
-                setIsUpdating(false); // user is not updating
+                setIsUpdating(false);
+                setPostUpdatedSuccess(true);
+                setTimeout(() => {
+                    setPostUpdatedSuccess(false);
+                }, 3000);
             })
             .catch((error) => {
                 if (error.response) {
@@ -205,13 +231,13 @@ function Profile({ auth }) {
                     </div>
 
                     <form onSubmit={submit_photo_data} className="m-4">
-                        <label htmlFor="photo">Upload Photo to profile</label>
+                        <label htmlFor="photo"> Upload Photo to profile </label>
                         <input
                             name="photo"
                             id="photo"
                             type="file"
                             // onChange={e => setData("image", e.target.files[0])}
-                        ></input>{" "}
+                        ></input>
                         <div className="flex items-center gap-4">
                             <button
                                 type="submit"
@@ -220,17 +246,10 @@ function Profile({ auth }) {
                             >
                                 Upload Photo
                             </button>
-                            <Transition
+                            <TransitionSucces
                                 show={photoUploadSuccess}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-gray-600">
-                                    Succesfuly added.
-                                </p>
-                            </Transition>
+                                message="Succesfuly added."
+                            />
                         </div>
                     </form>
 
@@ -272,15 +291,10 @@ function Profile({ auth }) {
                                 Save
                             </PrimaryButton>
                             {/* Apparition du mot save quand on met à jour la biographie */}
-                            <Transition
+                            <TransitionSucces
                                 show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-gray-600">Saved.</p>
-                            </Transition>
+                                message="Saved."
+                            />
                         </div>
                     </form>
                     {/* Formulaire pour l'ajout d'un nouveau post */}
@@ -306,12 +320,24 @@ function Profile({ auth }) {
                             placeholder="Content"
                             className="block w-2/4 min-w-fit mt-2 border rounded-lg shadow-md"
                         />
+                        <label htmlFor="imagePost"> Picture </label>
+                        <input
+                            name="imagePost"
+                            id="imagePost"
+                            type="file"
+                            onChange={(e) => setImagePost(e.target.files[0])}
+                        ></input>
+
                         <button
                             type="submit"
                             className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
                         >
                             Create post
                         </button>
+                        <TransitionSucces
+                            show={postCreatedSuccess}
+                            message="Succesfuly added."
+                        />
                     </form>
 
                     {/* Affichage des posts de l'user */}
@@ -325,14 +351,28 @@ function Profile({ auth }) {
                             {isUpdating && updatingPostId === post.id ? (
                                 <>
                                     <div className="flex items-center">
+                                        <input
+                                            name="imagePost"
+                                            id="imageUpdate"
+                                            type="file"
+                                            onChange={(e) =>
+                                                // {console.log(e.target.files[0].name)}
+                                                setImagePost(e.target.files[0])
+                                            }
+                                        ></input>
                                         <p className="mr-2">Title:</p>
                                         <TextInput
+                                            // value={title}
                                             type="text"
-                                            onChange={handleTitleChange}
+                                            // onChange={handleTitleChange}
                                             value={titleValue}
-                                            id="inputTitle"
+                                            id="titleUpdate"
                                             required
                                             autoComplete="inputTitle"
+                                            name="title"
+                                            onChange={(e) =>
+                                                setTitleValue(e.target.value)
+                                            }
                                         />
                                     </div>
                                     <div className="flex items-center">
@@ -340,10 +380,11 @@ function Profile({ auth }) {
                                         <TextInput
                                             type="text"
                                             onChange={handleContentChange}
-                                            value={ContentValue}
-                                            id="inputContent"
+                                            value={contentValue}
+                                            id="contentUpdate"
                                             required
                                             autoComplete="inputContent"
+                                            name="content"
                                         />
                                     </div>
                                     <button
@@ -355,9 +396,9 @@ function Profile({ auth }) {
                                 </>
                             ) : (
                                 <>
-                                    <div className="flex justify-center h-64">
+                                    <div className="flex justify-center h-96">
                                         <img
-                                          className="h-4/4 w-1/2"
+                                            className="object-cover h-5/5 min-w-contain w-auto"
                                             src={`http://127.0.0.1:5173/public/storage/images/${post.image}`}
                                         />
                                     </div>
@@ -372,6 +413,7 @@ function Profile({ auth }) {
                                     >
                                         Update
                                     </button>
+
                                     <button
                                         onClick={() => deletePost(post.id)}
                                         className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
@@ -380,6 +422,19 @@ function Profile({ auth }) {
                                     </button>
                                 </>
                             )}
+
+                            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-2xl">
+                                <TransitionSucces
+                                    show={postDeletedSuccess}
+                                    message="Post deleted successfully."
+                                    variant="delete"
+                                />
+                                <TransitionSucces
+                                    show={postUpdatedSuccess}
+                                    message="Post Succesfully updated."
+                                    variant="delete"
+                                />
+                            </div>
                         </div>
                     ))}
                 </div>
