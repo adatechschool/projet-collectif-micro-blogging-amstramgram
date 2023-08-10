@@ -322,7 +322,7 @@ function Profile({ auth }) {
 
                     {/* Affichage des posts de l'user */}
                     {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
-                    <div className="flex flex-col justify-center items-center bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2">
+                    <div className="flex flex-col justify-center items-center bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none">
                     {posts.map((post) => (
                         <div
                             key={post.id}
