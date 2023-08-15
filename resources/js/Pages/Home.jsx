@@ -53,6 +53,7 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
                         : post
                 )
             );
+            console.log(posts);
         }
     };
 
@@ -99,23 +100,35 @@ export default function Home({ auth, laravelVersion, phpVersion }) {
 
 
                                             className=" space-y-2 text-xl bg-purple-100 rounded-md m-4 pb-5">
+                                            <div className="flex items-center m-2">
+                                                {/* Displaying the user's profile image */}
+                                                <img
+                                                    src={
+                                                        post.user && post.user.image
+                                                            ? `http://127.0.0.1:5173/public/storage/images/${post.user.image}`
+                                                            : `https://picsum.photos/200/300`
+                                                    }
+                                                    alt="UserProfileImage"
+                                                    className="rounded-full w-16 h-16 border border-gray-300"
+                                                />
                                             {/* Author */}
                                             <p className="text-sm text-left p-2">
                                                 Posted by {post.user.name}
                                             </p>
+                                            </div>
 
                                             {/* Image */}
 
-                                            <div className="rounded-full">
+                                            <div className="rounded-full flex justify-center aspect-w-1 aspect-h-1 overflow-hidden">
                                                 <img
-                                                    className="w-82 p-3 rounded-3xl"
+                                                    className="w-82 p-3 rounded-3xl object-cover h-96"
                                                     src={post && post.image
                                                         ? `http://127.0.0.1:5173/public/storage/images/${post.image}`
-                                                        : `https://picsum.photos/200/300`} />
+                                                        : `https://picsum.photos/200/300`} alt="Post"/>
                                             </div>
                                         </div>
                                         {/* Reaction Icons */}
-                                        
+
                             <div className="flex flex-col items-center justify-center mt-6 text-xl font-semibold text-gray-900 dark:text-white">
                                             <div className="ReactionIcon flex items-start space-x-4 pl-2 ">
                                                 <div
