@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import {Head, useForm, usePage} from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
@@ -10,7 +10,7 @@ import TransitionSucces from "@/Components/TransitionSucces";
 
 import axios from "axios";
 
-function Profile({auth}) {
+function Profile({ auth }) {
     // Profile States
     const [userData, setUserData] = useState(null);
     const [photo_data, set_photo_data] = useState("");
@@ -95,7 +95,7 @@ function Profile({auth}) {
 
     ///
 
-    const {data, setData, patch, errors, processing, recentlySuccessful} =
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
             biographie: user.biographie,
         });
@@ -230,7 +230,7 @@ function Profile({auth}) {
                 user={auth.user}
                 header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Your Profile</h2>}
             >
-                <Head title="Profile"/>
+                <Head title="Profile" />
 
                 <div
                     class="sm:flex sm:flex-col sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-purple-900 selection:bg-red-500 selection:text-white">
@@ -240,7 +240,7 @@ function Profile({auth}) {
                         {/* <h1 className="text-center text-white text-4xl m-2">Your Profile</h1> */}
                         {/* Show the picture and the form for sending new picture in the database */}
                         <form onSubmit={submit_photo_data}
-                              className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 ">
+                            className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 ">
                             <div className="flex flex-col justify-center items-center">
                                 <div
                                     key={user.id}
@@ -257,13 +257,13 @@ function Profile({auth}) {
                                 </div>
                             </div>
 
-                            <form onSubmit={submit_photo_data} className="m-4">
+                            <form onSubmit={submit_photo_data} className="m-4 space-y-6">
                                 <label htmlFor="photo"> Upload Photo to profile </label>
                                 <input
                                     name="photo"
                                     id="photo"
                                     type="file"
-                                    // onChange={e => setData("image", e.target.files[0])}
+                                // onChange={e => setData("image", e.target.files[0])}
                                 ></input>
                                 <div className="flex items-center gap-4">
                                     <button
@@ -325,148 +325,152 @@ function Profile({auth}) {
                                     />
                                 </div>
                             </form>
-                            {/* Formulaire pour l'ajout d'un nouveau post */}
-
-                            <form
-                                onSubmit={handleSubmit}
-                                className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 "
-                            >
-                                <h2 className="text-center m-2 font-bold">
-                                    Add a new post
-                                </h2>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Title"
-                                    className="block w-2/4 min-w-fit border rounded-lg shadow-md"
-                                    required
-                                />
-                                <textarea
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
-                                    placeholder="Content"
-                                    className="block w-2/4 min-w-fit mt-2 border rounded-lg shadow-md"
-                                />
-                                <label htmlFor="imagePost"> Picture </label>
-                                <input
-                                    name="imagePost"
-                                    id="imagePost"
-                                    type="file"
-                                    onChange={(e) => setImagePost(e.target.files[0])}
-                                ></input>
-
-                                <button
-                                    type="submit"
-                                    className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                                >
-                                    Create post
-                                </button>
-                                <TransitionSucces
-                                    show={postCreatedSuccess}
-                                    message="Succesfuly added."
-                                />
-                            </form>
-
-                            {/* Affichage des posts de l'user */}
-                            {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
-                            {posts.map((post) => (
-                                <div
-                                    key={post.id}
-                                    className="w-2/3 lg:w-1/3 ml-12 p-3 text-center m-4 space-y-2 bg-purple-200 block rounded-xl"
-                                >
-                                    {/* Vérifier l'état si l'user update ou pas */}
-                                    {isUpdating && updatingPostId === post.id ? (
-                                        <>
-                                            <div className="flex items-center">
-                                                <input
-                                                    name="imagePost"
-                                                    id="imageUpdate"
-                                                    type="file"
-                                                    onChange={(e) =>
-                                                        // {console.log(e.target.files[0].name)}
-                                                        setImagePost(e.target.files[0])
-                                                    }
-                                                ></input>
-                                                <p className="mr-2">Title:</p>
-                                                <TextInput
-                                                    // value={title}
-                                                    type="text"
-                                                    // onChange={handleTitleChange}
-                                                    value={titleValue}
-                                                    id="titleUpdate"
-                                                    required
-                                                    autoComplete="inputTitle"
-                                                    name="title"
-                                                    onChange={(e) =>
-                                                        setTitleValue(e.target.value)
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="flex items-center">
-                                                <p className="mr-2">Content:</p>
-                                                <TextInput
-                                                    type="text"
-                                                    onChange={handleContentChange}
-                                                    value={contentValue}
-                                                    id="contentUpdate"
-                                                    required
-                                                    autoComplete="inputContent"
-                                                    name="content"
-                                                />
-                                            </div>
-                                            <button
-                                                onClick={updatePost}
-                                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                                            >
-                                                Save
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="flex justify-center h-96">
-                                                <img
-                                                    className="object-cover h-5/5 min-w-contain w-auto"
-                                                    src={`http://127.0.0.1:5173/storage/app/public/images/${post.image}`}
-                                                />
-                                            </div>
-
-                                            <h2>Title: {post.title}</h2>
-                                            <p>Content: {post.content}</p>
-                                            <button
-                                                onClick={() =>
-                                                    handleButtonClick(post.id)
-                                                }
-                                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
-                                            >
-                                                Update
-                                            </button>
-
-                                            <button
-                                                onClick={() => deletePost(post.id)}
-                                                className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
-                                            >
-                                                Delete
-                                            </button>
-                                        </>
-                                    )}
-
-                                    <div
-                                        className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-2xl">
-                                        <TransitionSucces
-                                            show={postDeletedSuccess}
-                                            message="Post deleted successfully."
-                                            variant="delete"
-                                        />
-                                        <TransitionSucces
-                                            show={postUpdatedSuccess}
-                                            message="Post Succesfully updated."
-                                            variant="delete"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
                         </form>
+                        {/* Formulaire pour l'ajout d'un nouveau post */}
+
+                        <form
+                            onSubmit={handleSubmit}
+                            className="bg-gray-200 text-center ml-12 p-6 space-y-4 rounded-xl w-2/3 lg:w-1/2 "
+                        >
+                            <h2 className="text-center m-2 font-bold">
+                                Add a new post
+                            </h2>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                placeholder="Title"
+                                className="block w-2/4 min-w-fit border rounded-lg shadow-md"
+                                required
+                            />
+                            <textarea
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                                placeholder="Content"
+                                className="block w-2/4 min-w-fit mt-2 border rounded-lg shadow-md"
+                            />
+                            <label htmlFor="imagePost"> Picture </label>
+                            <input
+                                name="imagePost"
+                                id="imagePost"
+                                type="file"
+                                onChange={(e) => setImagePost(e.target.files[0])}
+                            ></input>
+
+                            <button
+                                type="submit"
+                                className="m-2 px-4 py-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                            >
+                                Create post
+                            </button>
+                            <TransitionSucces
+                                show={postCreatedSuccess}
+                                message="Succesfuly added."
+                            />
+                        </form>
+
+                        {/* Affichage des posts de l'user */}
+                        {/* Si l'user est en train de Maj un post les input seront affichés sinon ce sera les text field qui seront affichés */}
+                        {posts.map((post) => (
+                            <div
+                                key={post.id}
+                                className="w-2/3 lg:w-1/3 ml-12 p-3 text-center m-4 space-y-2 bg-purple-200 block rounded-xl"
+                            >
+                                {/* Vérifier l'état si l'user update ou pas */}
+                                {isUpdating && updatingPostId === post.id ? (
+                                    <>
+                                        <div className="flex items-center">
+                                            <input
+                                                name="imagePost"
+                                                id="imageUpdate"
+                                                type="file"
+                                                onChange={(e) =>
+                                                    // {console.log(e.target.files[0].name)}
+                                                    setImagePost(e.target.files[0])
+                                                }
+                                            ></input>
+                                            <p className="mr-2">Title:</p>
+                                            <TextInput
+                                                // value={title}
+                                                type="text"
+                                                // onChange={handleTitleChange}
+                                                value={titleValue}
+                                                id="titleUpdate"
+                                                required
+                                                autoComplete="inputTitle"
+                                                name="title"
+                                                onChange={(e) =>
+                                                    setTitleValue(e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="flex items-center">
+                                            <p className="mr-2">Content:</p>
+                                            <TextInput
+                                                type="text"
+                                                onChange={handleContentChange}
+                                                value={contentValue}
+                                                id="contentUpdate"
+                                                required
+                                                autoComplete="inputContent"
+                                                name="content"
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={updatePost}
+                                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                                        >
+                                            Save
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="flex justify-center h-96">
+                                            <img
+                                                className="object-cover h-5/5 min-w-contain w-auto"
+                                                src={`http://127.0.0.1:5173/storage/app/public/images/${post.image}`}
+                                            />
+                                        </div>
+
+                                        <h2>Title: {post.title}</h2>
+                                        <p>Content: {post.content}</p>
+                                        <button
+                                            onClick={() =>
+                                                handleButtonClick(post.id)
+                                            }
+                                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500 "
+                                        >
+                                            Update
+                                        </button>
+
+                                        <button
+                                            onClick={() => deletePost(post.id)}
+                                            className="mt-2 px-4 py-2 m-2 block text-white bg-purple-600 rounded-lg shadow-md hover:bg-black duration-500"
+                                        >
+                                            Delete
+                                        </button>
+                                    </>
+                                )}
+
+                                <div
+                                    className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-2xl">
+                                    <TransitionSucces
+                                        show={postDeletedSuccess}
+                                        message="Post deleted successfully."
+                                        variant="delete"
+                                    />
+                                    <TransitionSucces
+                                        show={postUpdatedSuccess}
+                                        message="Post Succesfully updated."
+                                        variant="delete"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+
+                    </div>
+                    <div className="m-4">
+
                     </div>
                 </div>
 
